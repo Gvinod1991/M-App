@@ -3,6 +3,7 @@ import React from 'react';
 import {Text, View,TextInputImage ,Image,ScrollView  } from 'react-native';
 import { Header,Avatar,Card, ListItem, Button, Icon,SearchBar,FormLabel, FormInput, FormValidationMessage} from 'react-native-elements';
 export default class OtpScreen extends React.Component {
+  static navigationOptions = { header: null }
   render() {
     console.disableYellowBox = true;
     return (
@@ -16,7 +17,7 @@ export default class OtpScreen extends React.Component {
           icon={<Icon name='code' color='#ffffff' />}
           backgroundColor='#03A9F4'
           buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
-          title='Submit' />
+          title='Submit' onPress={() => this.props.navigation.navigate('Home')}/>
       </View>
     );
   }
