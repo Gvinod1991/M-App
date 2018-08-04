@@ -2,7 +2,7 @@
 import React from 'react';
 import {Text, View,TextInputImage ,Image,ScrollView  } from 'react-native';
 import { Header,Avatar,Card, ListItem, Button, Icon,SearchBar,FormLabel, FormInput, FormValidationMessage} from 'react-native-elements'
-export default class App extends React.Component {
+export default class LoginScreen extends React.Component {
   render() {
     console.disableYellowBox = true;
     return (

@@ -1,15 +1,15 @@
 
 import React from 'react';
 import {Text, View,TextInputImage ,Image,ScrollView  } from 'react-native';
-import { Header,Avatar,Card, ListItem, Button, Icon,SearchBar,FormLabel, FormInput, FormValidationMessage} from 'react-native-elements'
-export default class App extends React.Component {
+import { Header,Avatar,Card, ListItem, Button, Icon,SearchBar,FormLabel, FormInput, FormValidationMessage} from 'react-native-elements';
+export default class OtpScreen extends React.Component {
   render() {
     console.disableYellowBox = true;
     return (
       <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
       <Header  outerContainerStyles={{paddingBottom:0}} centerComponent={{ text: 'MY STYLE', style: { color: '#fff' } }}/>
       <Card image={require('./images/banner.jpg')} style={{borderWidth:0.1}} imageStyle={{height:300}} wrapperStyle={{margin:0,padding:0}} containerStyle={{borderWidth:0.5,height:250,margin:0,padding:0}} ></Card>
-        <FormLabel labelStyle={{fontSize:18}}>Mobile Number</FormLabel>
+        <FormLabel labelStyle={{fontSize:18}}>Otp</FormLabel>
         <FormInput keyboardType = 'numeric'inputStyle={{fontSize:16}} />
         <FormValidationMessage>Error message</FormValidationMessage>
         <Button
