@@ -41,7 +41,7 @@ export default class HomeScreen extends React.Component {
               buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
               title='VIEW NOW' />
           </Card>
-      </ScrollView>
+      </ScrollView>      
       </View>
     );
   }

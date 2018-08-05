@@ -6,13 +6,18 @@ import HomeScreen from './HomeScreen.js';
 import AuthLoadingScreen from './AuthLoadingScreen';
 import SetPassCodeScreen from './SetPassCodeScreen';
 import Logout from './Logout';
+import Footer from './Footer';
 import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
 
 // Implementation of HomeScreen, OtherScreen, SignInScreen, AuthLoadingScreen
 // goes here.
 
-const AppStack = createStackNavigator({ Home: HomeScreen,Logout:Logout,Login: LoginScreen });
-const AuthStack = createStackNavigator({ Login: LoginScreen ,Otp:OtpScreen,setPassCode:SetPassCodeScreen});
+const AppStack = createStackNavigator({ Footer:Footer,Home:HomeScreen,Logout:Logout,Login: LoginScreen},{
+  headerMode: 'none',
+});
+const AuthStack = createStackNavigator({ Login: LoginScreen ,Otp:OtpScreen,setPassCode:SetPassCodeScreen},{
+  headerMode: 'none',
+});
 
 export default createSwitchNavigator (
   {
@@ -21,6 +26,10 @@ export default createSwitchNavigator (
     Auth: AuthStack,
   },
   {
+    headerMode: 'none',
+  },
+  {
     initialRouteName: 'AuthLoading',
   }
+  
 );
