@@ -13,14 +13,17 @@ export default class LoginScreen extends React.Component {
     return (
       <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
       <Header  outerContainerStyles={{paddingBottom:0}} centerComponent={{ text: 'MY STYLE', style: { color: '#fff' } }}/>
+      <ScrollView>
       <Card image={require('./images/banner.jpg')} style={{borderWidth:0.1}} imageStyle={{height:300}} wrapperStyle={{margin:0,padding:0}} containerStyle={{borderWidth:0.5,height:250,margin:0,padding:0}} ></Card>
         <FormLabel labelStyle={{fontSize:18}}>Mobile Number</FormLabel>
-        <FormInput keyboardType = 'numeric'inputStyle={{fontSize:16}} />
+        <FormInput 
+   underlineColorAndroid="#ccc" keyboardType = 'numeric' inputStyle={{fontSize:16}} />
         <Button 
           icon={<Icon name='code' color='#ffffff' />}
           backgroundColor='#03A9F4'
           buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
           title='Submit' onPress={() => this.props.navigation.navigate('Otp')} />
+        </ScrollView>
       </View>
     );
   }
