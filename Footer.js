@@ -14,10 +14,10 @@ const Footer = createBottomTabNavigator(
       screen: HomeScreen,
       path: '/buttons',
       navigationOptions: {
-        tabBarLabel: 'Buttons',
+        tabBarLabel: 'Home',
         tabBarIcon: ({ tintColor, focused }) => (
           <Icon
-            name={focused ? 'emoticon-cool' : 'emoticon-neutral'}
+            name={focused ? 'home' : 'home'}
             size={30}
             type="material-community"
             color={tintColor}
@@ -29,9 +29,9 @@ const Footer = createBottomTabNavigator(
       screen: OtpScreen,
       path: '/lists',
       navigationOptions: {
-        tabBarLabel: 'Lists',
+        tabBarLabel: 'Offers',
         tabBarIcon: ({ tintColor, focused }) => (
-          <Icon name="list" size={30} type="entypo" color={tintColor} />
+          <Icon name="tags" size={30} type="font-awesome" color={tintColor} />
         ),
       },
     },
@@ -39,10 +39,10 @@ const Footer = createBottomTabNavigator(
       screen:SetPassCodeScreen,
       path: '/input',
       navigationOptions: {
-        tabBarLabel: 'Input',
+        tabBarLabel: 'Profile',
         tabBarIcon: ({ tintColor, focused }) => (
           <Icon
-            name="wpforms"
+            name="user-circle"
             size={30}
             type="font-awesome"
             color={tintColor}
@@ -50,14 +50,14 @@ const Footer = createBottomTabNavigator(
         ),
       },
     },
-    FontsTab: {
+    LogoutTab: {
       screen: LoginScreen,
       path: '/fonts',
       navigationOptions: {
-        tabBarLabel: 'Fonts',
+        tabBarLabel: 'Logout',
         tabBarIcon: ({ tintColor, focused }) => (
           <Icon
-            name={focused ? 'font' : 'font'}
+            name={focused ? 'sign-out' : 'sign-out'}
             size={30}
             type="font-awesome"
             color={tintColor}

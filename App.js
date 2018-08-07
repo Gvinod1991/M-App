@@ -5,6 +5,7 @@ import OtpScreen from './OtpScreen';
 import HomeScreen from './HomeScreen.js';
 import AuthLoadingScreen from './AuthLoadingScreen';
 import SetPassCodeScreen from './SetPassCodeScreen';
+import ServiceDetailScreen from './ServiceDetailScreen';
 import Logout from './Logout';
 import Footer from './Footer';
 import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
@@ -12,7 +13,7 @@ import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
 // Implementation of HomeScreen, OtherScreen, SignInScreen, AuthLoadingScreen
 // goes here.
 
-const AppStack = createStackNavigator({ Footer:Footer,Home:HomeScreen,Logout:Logout,Login: LoginScreen},{
+const AppStack = createStackNavigator({ Footer:Footer,Home:HomeScreen,Logout:Logout,Login: LoginScreen,Service:ServiceDetailScreen},{
   headerMode: 'none',
 });
 const AuthStack = createStackNavigator({ Login: LoginScreen ,Otp:OtpScreen,setPassCode:SetPassCodeScreen},{
