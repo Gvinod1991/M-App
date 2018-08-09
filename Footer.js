@@ -4,9 +4,9 @@ import { createBottomTabNavigator , createStackNavigator } from 'react-navigatio
 import { Icon } from 'react-native-elements';
 
 import HomeScreen from './HomeScreen';
-import OtpScreen from './OtpScreen';
-import SetPassCodeScreen from './SetPassCodeScreen';
-import LoginScreen from './LoginScreen';
+import OffersScreen from './OffersScreen';
+import ProfileScreen from './ProfileScreen';
+import BookingsScreen from './BookingsScreen';
 
 const Footer = createBottomTabNavigator(
   {
@@ -26,7 +26,7 @@ const Footer = createBottomTabNavigator(
       },
     },
     Offers: {
-      screen: OtpScreen,
+      screen: OffersScreen,
       path: '/lists',
       navigationOptions: {
         tabBarLabel: 'Offers',
@@ -35,14 +35,14 @@ const Footer = createBottomTabNavigator(
         ),
       },
     },
-    Profile: {
-      screen:SetPassCodeScreen,
-      path: '/input',
+    BookingsTab: {
+      screen: BookingsScreen,
+      path: '/bookings',
       navigationOptions: {
-        tabBarLabel: 'Profile',
+        tabBarLabel: 'Bookings',
         tabBarIcon: ({ tintColor, focused }) => (
           <Icon
-            name="user-circle"
+            name={focused ? 'calendar-check-o' : 'calendar-check-o'}
             size={30}
             type="font-awesome"
             color={tintColor}
@@ -50,14 +50,14 @@ const Footer = createBottomTabNavigator(
         ),
       },
     },
-    LogoutTab: {
-      screen: LoginScreen,
-      path: '/fonts',
+    Profile: {
+      screen:ProfileScreen,
+      path: '/profile',
       navigationOptions: {
-        tabBarLabel: 'Logout',
+        tabBarLabel: 'Profile',
         tabBarIcon: ({ tintColor, focused }) => (
           <Icon
-            name={focused ? 'sign-out' : 'sign-out'}
+            name="user-circle"
             size={30}
             type="font-awesome"
             color={tintColor}

@@ -31,7 +31,11 @@ export default class ServiceDetailScreen extends React.Component {
             <Icon name="star" type="font-awesome" color="#1fa67a" />
             <Text> 5 </Text>
             </View>
-
+            <Button
+          icon={<Icon name='code' color='#ffffff' />}
+          backgroundColor='#03A9F4'
+          buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
+          title='Book Now' onPress={() => this.props.navigation.navigate('Home')}/>
             <View style={{paddingTop:30,padding:5}}>
               <Text h4 >Our Services</Text>
               <View style={{flexDirection:'row',padding:10}}>
@@ -66,8 +70,6 @@ export default class ServiceDetailScreen extends React.Component {
               </View>
             </View>
           </Card>
-         
-         
       </ScrollView>      
       </View>
     );
