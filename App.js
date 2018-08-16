@@ -1,6 +1,7 @@
 import React from 'react';
 import {Text, View,TextInputImage ,Image,ScrollView  } from 'react-native';
 import LoginScreen from './LoginScreen';
+import SignupScreen from './SignupScreen';
 import OtpScreen from './OtpScreen';
 import HomeScreen from './HomeScreen.js';
 import AuthLoadingScreen from './AuthLoadingScreen';
@@ -16,7 +17,7 @@ import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
 const AppStack = createStackNavigator({ Footer:Footer,Home:HomeScreen,Logout:Logout,Login: LoginScreen,Service:ServiceDetailScreen},{
   headerMode: 'none',
 });
-const AuthStack = createStackNavigator({ Login: LoginScreen ,Otp:OtpScreen,setPassCode:SetPassCodeScreen},{
+const AuthStack = createStackNavigator({ Signup: SignupScreen ,Otp:OtpScreen,setPassCode:SetPassCodeScreen},{
   headerMode: 'none',
 });
 
