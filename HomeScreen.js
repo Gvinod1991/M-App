@@ -1,11 +1,17 @@
 
 import React from 'react';
-import {TouchableHighlight,Text, View,TextInputImage ,Image,ScrollView  } from 'react-native';
+import {TouchableHighlight,Text, View,TextInputImage ,Image,ScrollView,AsyncStorage } from 'react-native';
 import { Header,Avatar,Card, ListItem, Button, Icon,SearchBar,FormLabel, FormInput, FormValidationMessage} from 'react-native-elements';
 import Logout from './Logout';
 export default class HomeScreen extends React.Component {
   static navigationOptions = { header: null }
-  render() {
+  constructor(props) {
+    
+    super(props);
+    //AsyncStorage.removeItem('userToken');
+      
+    } 
+   render() {
     console.disableYellowBox = true;
     return (
       <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>

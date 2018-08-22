@@ -1,6 +1,5 @@
-
 import React from 'react';
-import {Text, View,TextInputImage ,Image,ScrollView  } from 'react-native';
+import {Text, View,TextInputImage ,Image,ScrollView,AsyncStorage  } from 'react-native';
 import { Header,Avatar,Card, ListItem, Button, Icon,SearchBar,FormLabel, FormInput, FormValidationMessage} from 'react-native-elements'
 export default class SignupScreen extends React.Component {
   static navigationOptions = {
@@ -16,14 +15,49 @@ export default class SignupScreen extends React.Component {
   handleChange(phone) {
     this.setState({phone: phone})
     }
+    //Function to sign up the user
     submit = () => {
       // Function body
       if(this.state.phone=="" || this.state.phone.length!=10)
       {
         this.setState({error:true});
-        this.setState({errorMessage:"Mobile is required"});
+        this.setState({errorMessage:"Mobile is required & should be 10 digits "});
       }
-      
+      else
+      {
+        this.setState({error:false});
+        this.setState({errorMessage:""});
+        const url="http://192.168.43.51/my-style-app/api/public-user";
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            mobile: this.state.phone
+          }),
+        }).then((response) => response.json())
+          .then((responseJson) => {
+            if(responseJson.data.status==='new')
+            {
+              AsyncStorage.setItem('userToken',responseJson.data.auth_token);
+              this.props.navigation.navigate('Otp',{
+                otp_session_key: responseJson.data.otp_session_key,
+                mobile: this.state.phone
+              });
+            }
+            else
+            {
+              AsyncStorage.setItem('userToken',responseJson.data.auth_token);
+              this.props.navigation.navigate('Home');
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+     
     }
  render() {
     
@@ -42,7 +76,7 @@ export default class SignupScreen extends React.Component {
           
           <FormLabel labelStyle={{fontSize:18}}>Mobile Number</FormLabel>
           <FormInput 
-            underlineColorAndroid="#ccc" shake={this.state.error ? false : true} 
+            underlineColorAndroid="#ccc" shake={this.state.error} 
             keyboardType = 'numeric' onChangeText={e => this.handleChange(e)} 
             value={this.state.phone} inputStyle={{fontSize:18}} />
             { this.state.error && 
