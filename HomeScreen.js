@@ -6,11 +6,54 @@ import Logout from './Logout';
 export default class HomeScreen extends React.Component {
   static navigationOptions = { header: null }
   constructor(props) {
-    
     super(props);
-    //AsyncStorage.removeItem('userToken');
-      
-    } 
+    this.state={
+      'userToken':"",
+      'vendors':[],
+      'message':""
+        }
+    this._retrieveuserToken();
+  }
+  //AsyncStorage.removeItem('userToken');
+  _retrieveuserToken = async () => {
+    try {
+      const userToken = await AsyncStorage.getItem('userToken');
+      if (userToken !== null) {
+        // We have data!!
+        this.getVendors(userToken);
+        this.setState({ userToken: userToken})
+      }
+      } catch (error) {
+        // Error retrieving data
+      }
+  }
+  //Function to get the user details
+  getVendors = (userToken) => {
+    const url="http://192.168.43.51/my-style-app/api/vendors";
+    //const image_api_url='http://192.168.43.51/my-style-app/public';
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer '+userToken
+      }
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if(responseJson.status==1)
+        {
+          this.setState({ vendors: responseJson.vendors});
+        }
+        else
+        {
+          this.setState({ message: "No saloons found in this area,Try with other location!"});
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
    render() {
     console.disableYellowBox = true;
     return (
@@ -23,63 +66,28 @@ export default class HomeScreen extends React.Component {
       platform="android"
       placeholder='Search' />
       <ScrollView>
-        <TouchableHighlight onPress={() => this.props.navigation.navigate('Service')}>
-          <Card
-            title='Saloon One'
+        {
+          this.state.vendors.map((vendor,index) =>
+          <TouchableHighlight key={index} onPress={() => this.props.navigation.navigate('Service',{vendorId:vendor.id})}>
+          <Card 
+            title={vendor.shop_name}
             image={require('./images/banner.jpg')}>
             <Text style={{marginBottom: 10}}>
-              The idea with React Native Elements is more about component structure than actual design.
+              {vendor.addr}
             </Text>
             <View style={{flexDirection:'row',justifyContent:"space-between"}}>
             <Icon name="map-marker" type="font-awesome" color="#ccc" />
-            <Text> Jaydev vihar</Text>
+            <Text> {vendor.city}</Text>
             <Text> | </Text>
             <Icon name="heart-o" type="font-awesome" color="#ccc" />
-            <Text> 5 </Text>
+            <Text> {vendor.open_at} </Text>
             <Text> | </Text>
             <Icon name="star" type="font-awesome" color="#1fa67a" />
-            <Text> 5 </Text>
+            <Text> {vendor.close_at} </Text>
             </View>
           </Card>
           </TouchableHighlight>
-          <TouchableHighlight onPress={() => this.props.navigation.navigate('Login')}>
-          <Card onPress={() => this.props.navigation.navigate('LoginScreen')}
-            title='Saloon Two'
-            image={require('./images/banner.jpg')}>
-            <Text style={{marginBottom: 10}}>
-              The idea with React Native Elements is more about component structure than actual design.
-            </Text>
-            <View style={{flexDirection:'row',justifyContent:"space-between"}}>
-            <Icon name="map-marker" type="font-awesome" color="#ccc" />
-            <Text> Nayapally</Text>
-            <Text> | </Text>
-            <Icon name="heart-o" type="font-awesome" color="#ccc" />
-            <Text> 4.5 </Text>
-            <Text> | </Text>
-            <Icon name="star" type="font-awesome" color="#1fa67a" />
-            <Text> 4 </Text>
-            </View>
-          </Card>
-          </TouchableHighlight>
-          <TouchableHighlight onPress={() => this.props.navigation.navigate('Login')}>
-          <Card
-            title='Saloon Three'
-            image={require('./images/banner.jpg')}>
-            <Text style={{marginBottom: 10}}>
-              The idea with React Native Elements is more about component structure than actual design.
-            </Text>
-            <View style={{flexDirection:'row',justifyContent:"space-between"}}>
-            <Icon name="map-marker" type="font-awesome" color="#ccc" />
-            <Text> CRPF Square</Text>
-            <Text> | </Text>
-            <Icon name="heart-o" type="font-awesome" color="#ccc" />
-            <Text> 4 </Text>
-            <Text> | </Text>
-            <Icon name="star" type="font-awesome" color="#1fa67a" />
-            <Text> 3.5 </Text>
-            </View>
-          </Card>
-          </TouchableHighlight>
+          )}
       </ScrollView>      
       </View>
     );
