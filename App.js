@@ -1,14 +1,12 @@
 import React from 'react';
-import {Text, View,TextInputImage ,Image,ScrollView  } from 'react-native';
-import LoginScreen from './LoginScreen';
-import SignupScreen from './SignupScreen';
-import OtpScreen from './OtpScreen';
-import HomeScreen from './HomeScreen.js';
-import AuthLoadingScreen from './AuthLoadingScreen';
-import SetPassCodeScreen from './SetPassCodeScreen';
-import ServiceDetailScreen from './ServiceDetailScreen';
-import Logout from './Logout';
-import Footer from './Footer';
+import LoginScreen from './components/LoginScreen';
+import SignupScreen from './components/SignupScreen';
+import OtpScreen from './components/OtpScreen';
+import HomeScreen from './components/HomeScreen.js';
+import AuthLoadingScreen from './common/AuthLoadingScreen';
+import ServiceDetailScreen from './components/ServiceDetailScreen';
+import Logout from './components/Logout';
+import Footer from './common/Footer';
 import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
 
 // Implementation of HomeScreen, OtherScreen, SignInScreen, AuthLoadingScreen
@@ -17,7 +15,7 @@ import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
 const AppStack = createStackNavigator({ Footer:Footer,Home:HomeScreen,Logout:Logout,Login: LoginScreen,Service:ServiceDetailScreen},{
   headerMode: 'none',
 });
-const AuthStack = createStackNavigator({ Signup: SignupScreen ,Otp:OtpScreen,setPassCode:SetPassCodeScreen},{
+const AuthStack = createStackNavigator({ Signup: SignupScreen ,Otp:OtpScreen},{
   headerMode: 'none',
 });
 

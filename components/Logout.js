@@ -1,6 +1,6 @@
 
 import React from 'react';
-import {Text, View,TextInputImage ,Image,ScrollView  } from 'react-native';
+import {Text, View} from 'react-native';
 import { Icon} from 'react-native-elements';
 export default class Logout extends React.Component {
   static navigationOptions = { header: null }

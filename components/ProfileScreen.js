@@ -1,8 +1,10 @@
 
 import React from 'react';
-import {TouchableHighlight,Text, View,TextInputImage ,Image,ScrollView,AsyncStorage,KeyboardAvoidingView  } from 'react-native';
-import { Header,Avatar,Card, Divider, Button, Icon,SearchBar,FormLabel, FormInput, FormValidationMessage} from 'react-native-elements';
-import Logout from './Logout';
+import {Text, View,ScrollView,AsyncStorage,KeyboardAvoidingView} from 'react-native';
+import { Header,Avatar, Divider, Button, Icon,FormLabel, FormInput, FormValidationMessage} from 'react-native-elements';
+import LogoComponent from '../common/LogoComponent';
+import Loader from '../common/Loader';
+import config from '../config';
 import { ImagePicker } from 'expo';
 export default class ProfileScreen extends React.Component {
   static navigationOptions = { header: null };
@@ -13,11 +15,12 @@ export default class ProfileScreen extends React.Component {
       email_id:'email@youremailserver.com',
       name:'Your Name',
       location:'Your Location/Address',
-      profile:'http://192.168.43.51/my-style-app/public/uploads/profile.png',
+      profile:config.public_image_url+'public/uploads/profile.png',
       viewMode:true,
       editMode:false,
       userToken:'',
-      image: null
+      image: null,
+      loading :true
       };
       this._retrieveuserToken();
      
@@ -38,8 +41,7 @@ export default class ProfileScreen extends React.Component {
     }
     //Function to get the user details
     getUserDetails = (userToken) => {
-        const url="http://192.168.43.51/my-style-app/api/public-user";
-        const image_api_url='http://192.168.43.51/my-style-app/public';
+        const url=config.apiEndpoint+"public-user";
         fetch(url, {
           method: 'GET',
           headers: {
@@ -49,6 +51,7 @@ export default class ProfileScreen extends React.Component {
           }
         }).then((response) => response.json())
           .then((responseJson) => {
+            this.state.loading=false;
             if(responseJson.status===1)
             {
               this.setState({ phone: responseJson.public_user.mobile,
@@ -58,13 +61,12 @@ export default class ProfileScreen extends React.Component {
               });
               if(responseJson.public_user.profile!="")
               {
-                console.log(image_api_url+'/'+responseJson.public_user.profile);
-                this.setState({ profile: image_api_url+'/'+responseJson.public_user.profile});
+                this.setState({ profile: config.public_image_url+'public/'+responseJson.public_user.profile});
               }
             }
             else
             {
-             console.log(responseJson);
+             //console.log(responseJson);
             }
           })
           .catch((error) => {
@@ -83,6 +85,7 @@ export default class ProfileScreen extends React.Component {
     };
     //Submit the Form and Update user details
     submit=()=>{
+      this.state.loading=true;
       const emailRegex=/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           if(this.state.name=='' || this.state.name==undefined)
           {
@@ -102,7 +105,7 @@ export default class ProfileScreen extends React.Component {
           this.setState({errorName:false});
           this.setState({errorEmail:false});
           this.setState({errorLocation:false});
-        const url="http://192.168.43.51/my-style-app/api/public-user";
+        const url=config.apiEndpoint+"public-user";
         fetch(url, {
           method: 'PUT',
           headers: {
@@ -117,7 +120,7 @@ export default class ProfileScreen extends React.Component {
           }),
         }).then((response) => response.json())
           .then((responseJson) => {
-            console.log(responseJson);
+            this.state.loading=false;
             if(responseJson.status==1)
             {
               this.setState({'viewMode':true});
@@ -125,7 +128,6 @@ export default class ProfileScreen extends React.Component {
             }
             else
             {
-              console.log(responseJson);
             }
           })
           .catch((error) => {
@@ -133,12 +135,14 @@ export default class ProfileScreen extends React.Component {
           });
     }
   _pickImage= async () => {
-    const url="http://192.168.43.51/my-style-app/api/public-user/upload-profile";
+   
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [4, 3],
     });
     if (!result.cancelled) {
+      this.setState({loading:true});
+      const url=config.apiEndpoint+"public-user/upload-profile";
       this.setState({ profile: result.uri });
       let formData = new FormData();
       formData.append('profileFile', {
@@ -147,20 +151,21 @@ export default class ProfileScreen extends React.Component {
         type:'image/jpg',
         filename :'profile.jpg'
       });
-      fetch('http://192.168.43.51/my-style-app/api/public-user/upload-profile', {
+      fetch(url, {
         method: 'POST',
         body: formData,
         headers: {
           Accept: 'application/json',
           'Content-Type': 'multipart/form-data',
-          //'Content-Language': React.NativeModules.RNI18n.locale,
           'Authorization': 'Bearer '+this.state.userToken
         },
       }).then((response) => response.json())
         .then((responseJson) => {
-          console.log(responseJson);
-        })
-        .catch((error) => {
+          if(responseJson.status==1){
+            this.setState({loading:false});
+           
+          }
+        }).catch((error) => {
           console.log(error);
         });
     }
@@ -169,9 +174,9 @@ export default class ProfileScreen extends React.Component {
     console.disableYellowBox = true;
     return (
       <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
-      <Header  outerContainerStyles={{paddingBottom:0}} centerComponent={{ text: 'MY STYLE', style: { color: '#fff' } }} 
-      rightComponent={<Logout navigate={this.props.navigation.navigate}/>} /> 
-    
+      <Loader loading={this.state.loading}/>
+      <Header  outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFEB3B'}}  centerComponent={<LogoComponent />} 
+       />
     <ScrollView>
             <View style={{paddingTop:30,padding:5,backgroundColor:'#f5f5f5'}}>
                 <View style={{flexDirection:'row',justifyContent:'center'}}>
@@ -190,7 +195,7 @@ export default class ProfileScreen extends React.Component {
                 {this.state.viewMode && <View>
                 <View style={{flexDirection:'row',justifyContent:'space-between',padding:5,backgroundColor:'#fff'}}>
                  <Text style={{fontSize:20,padding:5}}>{this.state.name}</Text>
-                 <Icon style={{fontSize:20,padding:5}} name="pencil" onPress={() => this.editUser()} color="#ccc"  type="font-awesome"/>
+                 <Icon style={{fontSize:20,padding:5}} name="pencil" onPress={() => this.editUser()} color="#111"  type="font-awesome"/>
                 </View>
                 <View style={{padding:5,backgroundColor:'#fff'}}>
                  <Text style={{fontSize:18,padding:5}}>About and contact</Text>

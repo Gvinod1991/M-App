@@ -1,19 +1,23 @@
 
 import React from 'react';
-import {Text, View,TextInputImage ,Image,ScrollView,AsyncStorage } from 'react-native';
-import { Header,Avatar,Card, ListItem, Button, Icon,SearchBar,FormLabel, FormInput, FormValidationMessage} from 'react-native-elements';
+import {Text, View,ScrollView,AsyncStorage } from 'react-native';
+import { Header,Card,FormLabel} from 'react-native-elements';
 import CodeInput from 'react-native-confirmation-code-input';
+import LogoComponent from '../common/LogoComponent';
+import Loader from '../common/Loader';
+import config from '../config';
 export default class OtpScreen extends React.Component {
   static navigationOptions = { header: null }
   constructor(props) {
   super(props);
     this.state={
-      error:""
+      error:"",
+      loading:false
     }
     }
   _checkOtp(code)
-  {
-      const url="http://192.168.43.51/my-style-app/api/public-user/activate";
+  {   this.state.loading=true;
+      const url=config.apiEndpoint+"public-user/activate";
         fetch(url, {
           method: 'POST',
           headers: {
@@ -26,6 +30,7 @@ export default class OtpScreen extends React.Component {
           }),
         }).then((response) => response.json())
           .then((responseJson) => {
+            this.state.loading=false;
             if(responseJson.status==1)
             {
               AsyncStorage.setItem('userToken',responseJson.auth_token);
@@ -46,9 +51,10 @@ export default class OtpScreen extends React.Component {
     console.disableYellowBox = true;
     return (
       <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
-      <Header  outerContainerStyles={{paddingBottom:0}} centerComponent={{ text: 'MY STYLE', style: { color: '#fff' } }}/>
+      <Loader loading={this.state.loading} />
+       <Header  outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFEB3B'}}  centerComponent={<LogoComponent />} />
       <ScrollView>
-      <Card image={require('./images/banner.jpg')} style={{borderWidth:0.1}} imageStyle={{height:300}} wrapperStyle={{margin:0,padding:0}} containerStyle={{borderWidth:0.5,height:250,margin:0,padding:0}} ></Card>
+      <Card image={require('../images/banner.jpg')} style={{borderWidth:0.1}} imageStyle={{height:300}} wrapperStyle={{margin:0,padding:0}} containerStyle={{borderWidth:0.5,height:250,margin:0,padding:0}} ></Card>
         <FormLabel labelStyle={{fontSize:18}}>Enter your OTP</FormLabel>
         <CodeInput
         ref="codeInputRef1"
@@ -63,9 +69,8 @@ export default class OtpScreen extends React.Component {
         onFulfill={(code) => this._checkOtp(code)}
         keyboardType = 'numeric'
       />
-      <Text  onPress={() => this.props.navigation.navigate('Home')} style={{textAlign: 'center',fontWeight: 'bold',fontSize: 18,paddingTop:10}}>Resend OTP</Text>
+      <Text style={{textAlign: 'center',fontWeight: 'bold',fontSize: 18,paddingTop:10}}>Resend OTP</Text>
       <Text >{this.state.error}</Text>
-         
           </ScrollView>
       
       </View>

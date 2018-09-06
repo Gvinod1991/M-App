@@ -1,16 +1,16 @@
 
 import React from 'react';
-import {TouchableHighlight,Text, View,TextInputImage ,Image,ScrollView  } from 'react-native';
-import { Header,Avatar,Card, Divider, Button, Icon,SearchBar,FormLabel, FormInput, FormValidationMessage} from 'react-native-elements';
-import Logout from './Logout';
+import {Text, View,ScrollView  } from 'react-native';
+import { Header,Avatar, Divider} from 'react-native-elements';
+import LogoComponent from '../common/LogoComponent';
+
 export default class OffersScreen extends React.Component {
   static navigationOptions = { header: null }
   render() {
     console.disableYellowBox = true;
     return (
       <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
-      <Header  outerContainerStyles={{paddingBottom:0}} centerComponent={{ text: 'MY STYLE', style: { color: '#fff' } }} 
-      rightComponent={<Logout navigate={this.props.navigation.navigate}/>} /> 
+      <Header outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFEB3B'}}  centerComponent={<LogoComponent />}  /> 
     
       <ScrollView>
             <View style={{backgroundColor:'#f5f5f5'}} >

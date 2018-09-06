@@ -1,8 +1,9 @@
 import React from 'react';
-import {TouchableHighlight,Text, View,TextInputImage ,Image,ScrollView,AsyncStorage} from 'react-native';
-import { Header,Avatar,Card, ListItem, Button, Icon,SearchBar,FormLabel, FormInput, FormValidationMessage} from 'react-native-elements';
-import Logout from './Logout';
-
+import {TouchableHighlight,Text, View,ScrollView,AsyncStorage} from 'react-native';
+import { Header,Avatar,Card, Button, Icon} from 'react-native-elements';
+import LogoComponent from '../common/LogoComponent';
+import Loader from '../common/Loader';
+import config from '../config';
 export default class ServiceDetailScreen extends React.Component {
   //static navigationOptions = { header: null }
   constructor(props) {
@@ -12,9 +13,9 @@ export default class ServiceDetailScreen extends React.Component {
       'vendor':[],
       'service':[],
       'timeslot':[],
-      'message':""
-        }
-    console.log('called constructor');    
+      'message':"",
+      'loader':false,
+        }   
     this._retrieveuserToken();
   }
   //AsyncStorage.removeItem('userToken');
@@ -33,7 +34,7 @@ export default class ServiceDetailScreen extends React.Component {
   //Function to get the user details
   getVendor = (userToken) => {
     
-    const url="http://192.168.43.51/my-style-app/api/vendor/"+this.props.navigation.state.params.vendorId;
+    const url=config.apiEndpoint+"vendor/"+this.props.navigation.state.params.vendorId;
     //const image_api_url='http://192.168.43.51/my-style-app/public';
     fetch(url, {
       method: 'GET',
@@ -44,9 +45,10 @@ export default class ServiceDetailScreen extends React.Component {
       }
     }).then((response) => response.json())
       .then((responseJson) => {
+        this.state.loading=false;
         if(responseJson.status==1)
         {
-          
+         
           this.setState({ vendor: responseJson.vendorData.vendor});
           this.setState({ service: responseJson.vendorData.service});
           this.setState({ timeslot: responseJson.vendorData.timeslot});
@@ -65,22 +67,20 @@ export default class ServiceDetailScreen extends React.Component {
     console.disableYellowBox = true;
     const Left = ({ onPress }) => (
       <TouchableHighlight onPress={onPress}>
-       <Icon name="arrow-left" type="font-awesome" color="#fff" />
+       <Icon name="arrow-left" type="font-awesome" color="#111" />
       </TouchableHighlight>
     ); 
     const { goBack } = this.props.navigation;
     return (
       <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
-      <Header leftComponent={<Left onPress={() => goBack()} />} outerContainerStyles={{paddingBottom:0}} centerComponent={{ text: 'MY STYLE', style: { color: '#fff' } }} 
-      rightComponent={<Logout navigate={this.props.navigation.navigate}/>}
-/> 
-    
+      <Loader loading={this.state.loading} />
+      <Header leftComponent={<Left onPress={() => goBack()} />} outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFEB3B'}}  centerComponent={<LogoComponent />}/> 
       <ScrollView> 
         {
       this.state.vendor && 
           <Card
             title={this.state.vendor.shop_name}
-            image={require('./images/banner.jpg')}>
+            image={require('../images/banner.jpg')}>
             <Text style={{marginBottom: 10}}>
             {this.state.vendor.addr}
             </Text>
@@ -88,11 +88,8 @@ export default class ServiceDetailScreen extends React.Component {
             <Icon name="map-marker" type="font-awesome" color="#ccc" />
             <Text> {this.state.vendor.city}</Text>
             <Text> | </Text>
-            <Icon name="heart-o" type="font-awesome" color="#ccc" />
-            <Text> {this.state.vendor.open_at} </Text>
-            <Text> | </Text>
-            <Icon name="star" type="font-awesome" color="#1fa67a" />
-            <Text> {this.state.vendor.close_at} </Text>
+            <Icon name="clock-o" type="font-awesome" color="#ccc" />
+            <Text> {this.state.vendor.open_at} - {this.state.vendor.close_at}</Text>
             </View>
             <View style={{paddingTop:30,padding:5}}>
               <Text h3>Our Services</Text>

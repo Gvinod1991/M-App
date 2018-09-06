@@ -1,19 +1,46 @@
 
 import React from 'react';
-import {TouchableHighlight,Text, View,TextInputImage ,Image,ScrollView,AsyncStorage } from 'react-native';
-import { Header,Avatar,Card, ListItem, Button, Icon,SearchBar,FormLabel, FormInput, FormValidationMessage} from 'react-native-elements';
-import Logout from './Logout';
+import {TouchableHighlight,Text, View,Image,ScrollView,AsyncStorage,Platform } from 'react-native';
+import { Header,Card, Icon,SearchBar} from 'react-native-elements';
+import { Constants, Location, Permissions } from 'expo';
+import LogoComponent from '../common/LogoComponent';
+import Loader from '../common/Loader';
+import config from '../config';
 export default class HomeScreen extends React.Component {
   static navigationOptions = { header: null }
   constructor(props) {
     super(props);
     this.state={
-      'userToken':"",
-      'vendors':[],
-      'message':""
+      userToken:"",
+      vendors:[],
+      message:"",
+      loading:true,
+      location: null,
+      errorMessage: null,
         }
     this._retrieveuserToken();
   }
+  componentWillMount() {
+    if (Platform.OS === 'android' && !Constants.isDevice) {
+      this.setState({
+        errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+      });
+    } else {
+      this._getLocationAsync();
+    }
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ location });
+  };
   //AsyncStorage.removeItem('userToken');
   _retrieveuserToken = async () => {
     try {
@@ -29,8 +56,7 @@ export default class HomeScreen extends React.Component {
   }
   //Function to get the user details
   getVendors = (userToken) => {
-    const url="http://192.168.43.51/my-style-app/api/vendors";
-    //const image_api_url='http://192.168.43.51/my-style-app/public';
+    const url=config.apiEndpoint+'vendors';
     fetch(url, {
       method: 'GET',
       headers: {
@@ -40,6 +66,7 @@ export default class HomeScreen extends React.Component {
       }
     }).then((response) => response.json())
       .then((responseJson) => {
+        this.setState({loading:false});
         if(responseJson.status==1)
         {
           this.setState({ vendors: responseJson.vendors});
@@ -56,11 +83,18 @@ export default class HomeScreen extends React.Component {
 
    render() {
     console.disableYellowBox = true;
+    let text = 'Waiting..';
+    if (this.state.errorMessage) {
+      text = this.state.errorMessage;
+    } else if (this.state.location) {
+      console.log(this.state.location);
+      text = JSON.stringify(this.state.location);
+    }
     return (
+      
       <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
-      <Header  outerContainerStyles={{paddingBottom:0}} centerComponent={{ text: 'MY STYLE', style: { color: '#fff' } }} 
-      rightComponent={<Logout navigate={this.props.navigation.navigate}/>}
-/> 
+      <Loader loading={this.state.loading} />
+      <Header  outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFEB3B'}}  centerComponent={<LogoComponent />} />
     <SearchBar
       showLoading
       platform="android"
@@ -71,19 +105,16 @@ export default class HomeScreen extends React.Component {
           <TouchableHighlight key={index} onPress={() => this.props.navigation.navigate('Service',{vendorId:vendor.id})}>
           <Card 
             title={vendor.shop_name}
-            image={require('./images/banner.jpg')}>
+            image={require('../images/banner.jpg')}>
             <Text style={{marginBottom: 10}}>
               {vendor.addr}
             </Text>
-            <View style={{flexDirection:'row',justifyContent:"space-between"}}>
+            <View style={{flexDirection:'row',justifyContent:"space-between",alignItems: 'baseline'}}>
             <Icon name="map-marker" type="font-awesome" color="#ccc" />
             <Text> {vendor.city}</Text>
             <Text> | </Text>
-            <Icon name="heart-o" type="font-awesome" color="#ccc" />
-            <Text> {vendor.open_at} </Text>
-            <Text> | </Text>
-            <Icon name="star" type="font-awesome" color="#1fa67a" />
-            <Text> {vendor.close_at} </Text>
+            <Icon name="clock-o" type="font-awesome" color="#ccc" />
+            <Text> {vendor.open_at} - {vendor.close_at}</Text>
             </View>
           </Card>
           </TouchableHighlight>

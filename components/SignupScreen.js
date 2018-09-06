@@ -1,15 +1,18 @@
 import React from 'react';
-import {Text, View,TextInputImage ,Image,ScrollView,AsyncStorage  } from 'react-native';
-import { Header,Avatar,Card, ListItem, Button, Icon,SearchBar,FormLabel, FormInput, FormValidationMessage} from 'react-native-elements'
+import {View,ScrollView,AsyncStorage  } from 'react-native';
+import { Header,Card, Button, Icon,FormLabel, FormInput, FormValidationMessage} from 'react-native-elements';
+import LogoComponent from '../common/LogoComponent';
+import Loader from '../common/Loader';
+import config from '../config';
 export default class SignupScreen extends React.Component {
   static navigationOptions = {
     header: null
   };
   constructor(props) {
-    
       super(props);
       this.state = {
         phone: '',
+        loading:false
         };
       } 
   handleChange(phone) {
@@ -17,6 +20,7 @@ export default class SignupScreen extends React.Component {
     }
     //Function to sign up the user
     submit = () => {
+      this.state.loading=true;
       // Function body
       if(this.state.phone=="" || this.state.phone.length!=10)
       {
@@ -27,7 +31,7 @@ export default class SignupScreen extends React.Component {
       {
         this.setState({error:false});
         this.setState({errorMessage:""});
-        const url="http://192.168.43.51/my-style-app/api/public-user";
+        const url=config.apiEndpoint+"public-user";
         fetch(url, {
           method: 'POST',
           headers: {
@@ -39,6 +43,7 @@ export default class SignupScreen extends React.Component {
           }),
         }).then((response) => response.json())
           .then((responseJson) => {
+            this.state.loading=false;
             if(responseJson.data.status==='new')
             {
               AsyncStorage.setItem('userToken',responseJson.data.auth_token);
@@ -64,10 +69,10 @@ export default class SignupScreen extends React.Component {
     console.disableYellowBox = true;
     return (
       <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
-        <Header  outerContainerStyles={{paddingBottom:0}} 
-            centerComponent={{ text: 'MY STYLE', style: { color: '#fff' } }}/>
+        <Loader loading={this.state.loading} />
+        <Header  outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFEB3B'}}  centerComponent={<LogoComponent />} />
         <ScrollView>
-          <Card image={require('./images/banner.jpg')} 
+          <Card image={require('../images/banner.jpg')} 
             style={{borderWidth:0.1}} 
             imageStyle={{height:300}} 
             wrapperStyle={{margin:0,padding:0}} 

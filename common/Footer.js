@@ -3,10 +3,10 @@ import {Text, View,TextInputImage ,Image,ScrollView  } from 'react-native';
 import { createBottomTabNavigator , createStackNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 
-import HomeScreen from './HomeScreen';
-import OffersScreen from './OffersScreen';
-import ProfileScreen from './ProfileScreen';
-import BookingsScreen from './BookingsScreen';
+import HomeScreen from '../components/HomeScreen';
+import OffersScreen from '../components/OffersScreen';
+import ProfileScreen from '../components/ProfileScreen';
+import BookingsScreen from '../components/BookingsScreen';
 
 const Footer = createBottomTabNavigator(
   {
@@ -73,7 +73,7 @@ const Footer = createBottomTabNavigator(
     // Android's default option displays tabBars on top, but iOS is bottom
     tabBarPosition: 'bottom',
     tabBarOptions: {
-      activeTintColor: '#e91e63',
+      activeTintColor: '#FFEB3B',
       // Android's default showing of icons is false whereas iOS is true
       showIcon: true,
     },
