@@ -1,5 +1,5 @@
 import React from 'react';
-import {TouchableHighlight,Text, View,ScrollView,AsyncStorage,StyleSheet,Image} from 'react-native';
+import {TouchableHighlight,Text, View,ScrollView,AsyncStorage,StyleSheet,Image,Modal,Dimensions,DatePickerAndroid,TimePickerAndroid,Picker} from 'react-native';
 import { Header,Avatar,Card, Button, Icon} from 'react-native-elements';
 import { MapView } from 'expo';
 import LogoComponent from '../common/LogoComponent';
@@ -10,12 +10,14 @@ export default class ServiceDetailScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state={
-      'userToken':"",
-      'vendor':[],
-      'service':[],
-      'timeslot':[],
-      'message':"",
-      'loader':false,
+      userToken:"",
+      vendor:[],
+      service:[],
+      timeslot:[],
+      message:"",
+      loader:false,
+      isModalOpen:false,
+      seats:0
         }   
     this._retrieveuserToken();
   }
@@ -46,13 +48,13 @@ export default class ServiceDetailScreen extends React.Component {
       }
     }).then((response) => response.json())
       .then((responseJson) => {
-        this.state.loading=false;
+        this.setState({loading:false});
         if(responseJson.status==1)
         {
-         
           this.setState({ vendor: responseJson.vendorData.vendor});
           this.setState({ service: responseJson.vendorData.service});
           this.setState({ timeslot: responseJson.vendorData.timeslot});
+          
         }
         else
         {
@@ -64,7 +66,41 @@ export default class ServiceDetailScreen extends React.Component {
       });
   }
   bookNow=()=>{
-
+    this.setState({isModalOpen:true});
+  }
+  //Android Date picker
+  openDatePicker= async ()=>{
+    try {
+      const {action, year, month, day} = await DatePickerAndroid.open({
+        // Use `new Date()` for current date.
+        // May 25 2020. Month 0 is January.
+        date: new Date(),
+        mode:'spinner'
+      });
+      if (action !== DatePickerAndroid.dismissedAction) {
+        // Selected year, month (0-11), day
+        console.log(year,month,day);
+      }
+    } catch ({code, message}) {
+      console.warn('Cannot open date picker', message);
+    }
+  }
+  //Android time picker
+  openTimePicker = async ()=>{
+    try {
+      const {action, hour, minute} = await TimePickerAndroid.open({
+        hour: 14,
+        minute: 0,
+        is24Hour: false, // Will display '2 PM'
+        mode:'spinner'
+      });
+      if (action !== TimePickerAndroid.dismissedAction) {
+        // Selected hour (0-23), minute (0-59)
+        console.log(hour);
+      }
+    } catch ({code, message}) {
+      console.warn('Cannot open time picker', message);
+    }
   }
   render() {
     console.disableYellowBox = true;
@@ -122,12 +158,17 @@ export default class ServiceDetailScreen extends React.Component {
               )}
               
             </View>
+            {
+      this.state.vendor && 
             <View style={{paddingTop:30,padding:5}}>
               <Text style={{textAlign:'center',fontSize:25,borderBottomWidth:2,borderBottomColor:'#FF3B70'}} h2>Locate us @</Text>
                 <View style={{paddingTop:20,flexDirection:'row',justifyContent:"space-between"}}>
                 <Image source={require('../images/map.png') }/>
                 </View>
             </View>
+            }
+              {
+      this.state.vendor && 
             <View style={{paddingTop:30,padding:5}}>
               <Text style={{textAlign:'center',fontSize:25,borderBottomWidth:2,borderBottomColor:'#FF3B70'}} h2>Follow us @</Text>
                 <View style={{paddingTop:20,flexDirection:'row',justifyContent:"space-between"}}>
@@ -137,9 +178,47 @@ export default class ServiceDetailScreen extends React.Component {
                 <Icon name="youtube" type="font-awesome" color="#FF3B70" />
                 </View>
             </View>
+              }
           </Card>
         }
-
+        <Modal visible={this.state.isModalOpen}
+              onRequestClose={() => this.setState({isModalOpen: false})} animationType={"slide"}
+              transparent={true}>
+              <View style={styles.modalBackground}>
+              <Card
+                  title='Select seats'
+                  titleStyle={{fontSize:26,color:'#FF3B70'}}
+                  >
+                  <View style={{paddingTop:10,flexDirection:'row',justifyContent:"space-between"}} >
+                  <Icon
+                   color="#FF3B70" 
+                    name="calendar-check-o" type="font-awesome" onPress={() => this.openDatePicker()}/>
+                   <Icon
+                   color="#FF3B70" 
+                    name="clock-o" type="font-awesome" onPress={() => this.openTimePicker()}/>
+                    <Picker
+                      selectedValue={this.state.seats}
+                      style={{ height: 50, width: 100 }}
+                      onValueChange={(itemValue, itemIndex) => this.setState({seats: itemValue})}>
+                      <Picker.Item label="1" value="1" />
+                      <Picker.Item label="2" value="2" />
+                      <Picker.Item label="3" value="3" />
+                    </Picker>
+                  </View>
+                  
+                  <View style={{paddingTop:30,padding:5,flexDirection:'row',justifyContent:"space-between"}}>
+                    <Button
+                    buttonStyle={styles.button}
+                    style={{borderRadius: 30}}
+                    title='Pay Now' onPress={() => this.setState({isModalOpen: false})}/>
+                    <Button
+                    buttonStyle={styles.button}
+                    style={{borderRadius: 30}}
+                    title='Cancel' onPress={() => this.setState({isModalOpen: false})}/>
+                  </View>
+          </Card>
+              </View>
+        </Modal>
       </ScrollView>      
       </View>
     );
@@ -154,6 +233,15 @@ const styles = StyleSheet.create({
   },
   icon:{
     color:'#FF3B70'
+  },
+  modalBackground: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    backgroundColor: '#00000040',
+    height: Dimensions.get('window').height,
+    width:Dimensions.get('window').width
   }
 })
 

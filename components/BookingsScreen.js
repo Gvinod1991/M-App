@@ -9,7 +9,7 @@ export default class BookingsScreen extends React.Component {
     console.disableYellowBox = true;
     return (
       <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
-      <Header outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFEB3B'}}  centerComponent={<LogoComponent />}  />
+      <Header outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFF'}}  centerComponent={<LogoComponent />}  />
       <ScrollView>
             <View style={{paddingTop:30,padding:5,backgroundColor:'#f5f5f5'}}>
             <Text style={{padding:5}}>Bookings</Text>

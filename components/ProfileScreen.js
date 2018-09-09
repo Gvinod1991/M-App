@@ -175,7 +175,7 @@ export default class ProfileScreen extends React.Component {
     return (
       <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
       <Loader loading={this.state.loading}/>
-      <Header  outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFEB3B'}}  centerComponent={<LogoComponent />} 
+      <Header  outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFF'}}  centerComponent={<LogoComponent />} 
        />
     <ScrollView>
             <View style={{paddingTop:30,padding:5,backgroundColor:'#f5f5f5'}}>
@@ -195,22 +195,22 @@ export default class ProfileScreen extends React.Component {
                 {this.state.viewMode && <View>
                 <View style={{flexDirection:'row',justifyContent:'space-between',padding:5,backgroundColor:'#fff'}}>
                  <Text style={{fontSize:20,padding:5}}>{this.state.name}</Text>
-                 <Icon style={{fontSize:20,padding:5}} name="pencil" onPress={() => this.editUser()} color="#111"  type="font-awesome"/>
+                 <Icon style={{fontSize:20,padding:5}} name="pencil" onPress={() => this.editUser()} color="#FF3B70"  type="font-awesome"/>
                 </View>
                 <View style={{padding:5,backgroundColor:'#fff'}}>
                  <Text style={{fontSize:18,padding:5}}>About and contact</Text>
                  <View style={{flexDirection:'row'}}>
-                 <Icon name="phone" color="#ccc" type="font-awesome"/>
+                 <Icon name="phone" color="#FF3B70" type="font-awesome"/>
                  <Text style={{fontSize:16,padding:20}}>+91-{this.state.phone}</Text>
                  </View>
                  <Divider style={{ backgroundColor: '#ccc' }} />
                  <View style={{flexDirection:'row'}}>
-                 <Icon name="envelope" color="#ccc" type="font-awesome"/>
+                 <Icon name="envelope" color="#FF3B70" type="font-awesome"/>
                  <Text style={{fontSize:16,padding:20}}>{this.state.email_id}</Text>
                  </View>
                  <Divider style={{ backgroundColor: '#ccc' }} />
                  <View style={{flexDirection:'row'}}>
-                 <Icon name="map-marker" color="#ccc" type="font-awesome"/>
+                 <Icon name="map-marker" color="#FF3B70" type="font-awesome"/>
                  <Text style={{fontSize:16,padding:20}}>{this.state.location}</Text>
                  </View>
                 </View>
@@ -243,7 +243,7 @@ export default class ProfileScreen extends React.Component {
                     }
                   <Button 
                     icon={<Icon name='code' color='#ffffff' />}
-                    backgroundColor='#03A9F4'
+                    backgroundColor='#FF3B70'
                     buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
                     title='Update' onPress={() => this.submit()} />
           

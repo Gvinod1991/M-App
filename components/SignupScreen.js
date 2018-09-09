@@ -70,7 +70,7 @@ export default class SignupScreen extends React.Component {
     return (
       <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
         <Loader loading={this.state.loading} />
-        <Header  outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFEB3B'}}  centerComponent={<LogoComponent />} />
+        <Header  outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFF'}}  centerComponent={<LogoComponent />} />
         <ScrollView>
           <Card image={require('../images/banner.jpg')} 
             style={{borderWidth:0.1}} 

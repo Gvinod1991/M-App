@@ -4,7 +4,7 @@ import {
   AsyncStorage,
   StatusBar,
   StyleSheet,
-  View,Modal
+  View,Modal,Dimensions,Overlay
 } from 'react-native';
 const Loader = props => {
     const {
@@ -24,6 +24,7 @@ const Loader = props => {
                 <ActivityIndicator color="#FF3B70"  size="large" 
                 animating={loading} />
             </View>
+            
             </View>
         </Modal>
     );
@@ -34,16 +35,20 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       flexDirection: 'column',
       justifyContent: 'space-around',
-      backgroundColor: '#00000040'
+      backgroundColor: '#00000040',
     },
     activityIndicatorWrapper: {
       backgroundColor: '#FFFFFF',
-      height: 100,
-      width: 100,
-      borderRadius: 10,
+      height: 50,
+      width:Dimensions.get('window').width-30,
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'space-around'
+      justifyContent: 'space-around',
+      elevation:5,
+      shadowOffset: { width: 10, height: 10 },
+      shadowColor: "grey",
+      shadowOpacity: 0.5,
+      shadowRadius: 10,
     }
   });
 

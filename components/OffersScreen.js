@@ -10,7 +10,7 @@ export default class OffersScreen extends React.Component {
     console.disableYellowBox = true;
     return (
       <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
-      <Header outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFEB3B'}}  centerComponent={<LogoComponent />}  /> 
+      <Header outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFF'}}  centerComponent={<LogoComponent />}  /> 
     
       <ScrollView>
             <View style={{backgroundColor:'#f5f5f5'}} >
