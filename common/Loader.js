@@ -21,7 +21,7 @@ const Loader = props => {
             visible={loading}>
             <View style={styles.modalBackground}>
             <View style={styles.activityIndicatorWrapper}>
-                <ActivityIndicator size="large" 
+                <ActivityIndicator color="#FF3B70"  size="large" 
                 animating={loading} />
             </View>
             </View>

@@ -1,6 +1,7 @@
 import React from 'react';
-import {TouchableHighlight,Text, View,ScrollView,AsyncStorage} from 'react-native';
+import {TouchableHighlight,Text, View,ScrollView,AsyncStorage,StyleSheet,Image} from 'react-native';
 import { Header,Avatar,Card, Button, Icon} from 'react-native-elements';
+import { MapView } from 'expo';
 import LogoComponent from '../common/LogoComponent';
 import Loader from '../common/Loader';
 import config from '../config';
@@ -62,65 +63,99 @@ export default class ServiceDetailScreen extends React.Component {
         console.error(error);
       });
   }
-  
+  bookNow=()=>{
+
+  }
   render() {
     console.disableYellowBox = true;
     const Left = ({ onPress }) => (
       <TouchableHighlight onPress={onPress}>
-       <Icon name="arrow-left" type="font-awesome" color="#111" />
+       <Icon name="arrow-left" type="font-awesome" color="#FF3B70" />
       </TouchableHighlight>
     ); 
     const { goBack } = this.props.navigation;
     return (
       <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
       <Loader loading={this.state.loading} />
-      <Header leftComponent={<Left onPress={() => goBack()} />} outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFEB3B'}}  centerComponent={<LogoComponent />}/> 
+      <Header leftComponent={<Left onPress={() => goBack()} />} outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFF'}}  centerComponent={<LogoComponent />}/> 
       <ScrollView> 
         {
       this.state.vendor && 
           <Card
             title={this.state.vendor.shop_name}
-            image={require('../images/banner.jpg')}>
+            titleStyle={{fontSize:26,color:'#FF3B70'}}
+            image={{uri: config.public_image_url+'public/'+this.state.vendor.photo}}>
             <Text style={{marginBottom: 10}}>
-            {this.state.vendor.addr}
+            {this.state.vendor.shop_descr + 'We are situated at '+this.state.vendor.addr}
             </Text>
             <View style={{flexDirection:'row',justifyContent:"space-between",alignItems: 'baseline'}}>
-            <Icon name="map-marker" type="font-awesome" color="#ccc" />
+            <Icon name="map-marker" type="font-awesome" color="#FF3B70" />
             <Text> {this.state.vendor.city}</Text>
             <Text> | </Text>
-            <Icon name="clock-o" type="font-awesome" color="#ccc" />
+            <Icon name="clock-o" type="font-awesome" color="#FF3B70" />
             <Text> {this.state.vendor.open_at} - {this.state.vendor.close_at}</Text>
             </View>
             <View style={{paddingTop:30,padding:5}}>
-              <Text h3>Our Services</Text>
+              <Text style={{textAlign:'center',fontSize:25,borderBottomWidth:2,borderBottomColor:'#FF3B70'}} h2>Our Services</Text>
               {
                 this.state.service.map((serv,index) =>
-                <View key={index} style={{flexDirection:'row',justifyContent:"space-between",alignItems: 'baseline',padding:10}}>
+                <View key={index} style={{paddingTop:10,flexDirection:'row',justifyContent:"space-between"}}>
                 <Avatar
                   medium
                   rounded
-                  source={{uri: "https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg"}}
+                  source={{uri: config.public_image_url+'public/'+serv.service_image}}
                   onPress={() => console.log("Works!")}
                   activeOpacity={0.7}
                 />
-                <Text >{serv.service_name}</Text>
-                <Text >{serv.service_price}</Text>
+                <View style={{flexDirection:'column',justifyContent:"space-between"}}>
+                <Text h3>{serv.service_name}</Text>
+                <View style={{flexDirection:'row',justifyContent:"center"}}>
+                <Icon name="inr" type="font-awesome" color="#FF3B70" />
+                <View><Text style={{fontSize:24}}>{serv.service_price}</Text></View>
+                </View>
+                </View>
                 <Button
-          icon={<Icon name='code' color='#ffffff' />}
-          backgroundColor='#03A9F4'
-          buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
-          title='Book Now' onPress={() => this.props.navigation.navigate('Home')}/>
+                  buttonStyle={styles.button}
+                  style={{borderRadius: 30}}
+                  title='Book Now' onPress={() => this.bookNow()}/>
                 </View>
               )}
               
             </View>
+            <View style={{paddingTop:30,padding:5}}>
+              <Text style={{textAlign:'center',fontSize:25,borderBottomWidth:2,borderBottomColor:'#FF3B70'}} h2>Locate us @</Text>
+                <View style={{paddingTop:20,flexDirection:'row',justifyContent:"space-between"}}>
+                <Image source={require('../images/map.png') }/>
+                </View>
+            </View>
+            <View style={{paddingTop:30,padding:5}}>
+              <Text style={{textAlign:'center',fontSize:25,borderBottomWidth:2,borderBottomColor:'#FF3B70'}} h2>Follow us @</Text>
+                <View style={{paddingTop:20,flexDirection:'row',justifyContent:"space-between"}}>
+                <Icon name="facebook" type="font-awesome" color="#FF3B70" />
+                <Icon name="twitter" type="font-awesome" color="#FF3B70" />
+                <Icon name="instagram" type="font-awesome" color="#FF3B70" />
+                <Icon name="youtube" type="font-awesome" color="#FF3B70" />
+                </View>
+            </View>
           </Card>
         }
+
       </ScrollView>      
       </View>
     );
   }
 }
+const styles = StyleSheet.create({
+
+  button: {
+    margin: 5,
+    borderRadius: 30,
+    backgroundColor:'#FF3B70'
+  },
+  icon:{
+    color:'#FF3B70'
+  }
+})
 
 
 

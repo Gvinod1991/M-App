@@ -1,7 +1,7 @@
 
 import React from 'react';
-import {TouchableHighlight,Text, View,Image,ScrollView,AsyncStorage,Platform } from 'react-native';
-import { Header,Card, Icon,SearchBar} from 'react-native-elements';
+import {TouchableHighlight,Text, View,Image,ScrollView,AsyncStorage,Platform,StyleSheet } from 'react-native';
+import { Header,Card, Icon,SearchBar,Button} from 'react-native-elements';
 import { Constants, Location, Permissions } from 'expo';
 import LogoComponent from '../common/LogoComponent';
 import Loader from '../common/Loader';
@@ -87,14 +87,14 @@ export default class HomeScreen extends React.Component {
     if (this.state.errorMessage) {
       text = this.state.errorMessage;
     } else if (this.state.location) {
-      console.log(this.state.location);
+      //console.log(this.state.location);
       text = JSON.stringify(this.state.location);
-    }
+    } 
     return (
       
       <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
       <Loader loading={this.state.loading} />
-      <Header  outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFEB3B'}}  centerComponent={<LogoComponent />} />
+      <Header  outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFF'}}  centerComponent={<LogoComponent />} />
     <SearchBar
       showLoading
       platform="android"
@@ -105,16 +105,21 @@ export default class HomeScreen extends React.Component {
           <TouchableHighlight key={index} onPress={() => this.props.navigation.navigate('Service',{vendorId:vendor.id})}>
           <Card 
             title={vendor.shop_name}
-            image={require('../images/banner.jpg')}>
-            <Text style={{marginBottom: 10}}>
-              {vendor.addr}
-            </Text>
+            titleStyle={{fontSize:26,color:'#FF3B70'}}
+            image={{uri: config.public_image_url+'public/'+vendor.photo}}>
             <View style={{flexDirection:'row',justifyContent:"space-between",alignItems: 'baseline'}}>
-            <Icon name="map-marker" type="font-awesome" color="#ccc" />
-            <Text> {vendor.city}</Text>
-            <Text> | </Text>
-            <Icon name="clock-o" type="font-awesome" color="#ccc" />
+            <Icon name="map-marker" type="font-awesome" color="#FF3B70" />
+            <Text style={{marginBottom: 10}}>
+              {vendor.addr+','+vendor.city}
+            </Text>
+            </View>
+            <View style={{flexDirection:'row',justifyContent:"space-between",alignItems: 'baseline'}}>
+            <Icon name="clock-o" type="font-awesome" color="#FF3B70" />
             <Text> {vendor.open_at} - {vendor.close_at}</Text>
+            <Button
+                  buttonStyle={styles.button}
+                  style={{borderRadius: 30}}
+                  title='View More' onPress={() => this.props.navigation.navigate('Service',{vendorId:vendor.id})}/>
             </View>
           </Card>
           </TouchableHighlight>
@@ -124,6 +129,16 @@ export default class HomeScreen extends React.Component {
     );
   }
 }
+const styles = StyleSheet.create({
+  button: {
+    borderRadius: 30,
+    backgroundColor:'#FF3B70'
+  },
+  icon:{
+    color:'#FF3B70'
+  }
+})
+
 
 
 

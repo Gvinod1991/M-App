@@ -73,7 +73,7 @@ const Footer = createBottomTabNavigator(
     // Android's default option displays tabBars on top, but iOS is bottom
     tabBarPosition: 'bottom',
     tabBarOptions: {
-      activeTintColor: '#FFEB3B',
+      activeTintColor: '#FF3B70',
       // Android's default showing of icons is false whereas iOS is true
       showIcon: true,
     },
