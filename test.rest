@@ -1,0 +1,64 @@
+# Public User /public users login
+
+POST http://localhost/my-style-app/api/public-user  HTTP/1.1 
+content-type: application/json
+
+{
+    "mobile":"9861562948"
+}
+
+###
+POST http://localhost/my-style-app/api/public-user/activate  HTTP/1.1 
+content-type: application/json
+
+{
+    "otp":"334004",
+    "otp_session_key":"db3cfc09-a309-11e8-a895-0200cd936042"
+}
+
+###
+#Get the user details
+curl --request GET
+
+-H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOm51bGwsInN1YiI6Ijk4NjE1NjI5NDgiLCJ0eXBlIjoiUHVibGljVXNlciIsImlhdCI6MTUzNDg2MTc1NywiZXhwIjoxNjIxMjYxNzU3LCJzY29wZSI6WyJsb2dpbiJdLCJ4c3JmVG9rZW4iOiIwYjUwYWJiZGVjMmMwNjc3ZjA3MjQxZjZmYjBhZmMyOCJ9.Tpgw4rAG-7jxyqOg6tYETwzqZ0IvM6BzIWgBFpPofUo'  
+-H 'Content-Type: application/json' 
+    --url http://localhost/my-style-app/api/public-user
+###
+#Public User details update
+PUT http://localhost/my-style-app/api/public-user HTTP/1.1 
+ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOm51bGwsInN1YiI6Ijk4NjE1NjI5NDgiLCJ0eXBlIjoiUHVibGljVXNlciIsImlhdCI6MTUzNDg2MTc1NywiZXhwIjoxNjIxMjYxNzU3LCJzY29wZSI6WyJsb2dpbiJdLCJ4c3JmVG9rZW4iOiIwYjUwYWJiZGVjMmMwNjc3ZjA3MjQxZjZmYjBhZmMyOCJ9.Tpgw4rAG-7jxyqOg6tYETwzqZ0IvM6BzIWgBFpPofUo
+ content-type: application/json
+ 
+    {
+        "email_id":"venkat.godti3@gmail.com",
+        "location":"Jaydev Vihar,BBSR",
+        "name":"Godti Vinod"
+    }
+### 
+ 
+curl --request GET
+
+-H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOm51bGwsInN1YiI6Ijk4NjE1NjI5NDgiLCJ0eXBlIjoiUHVibGljVXNlciIsImlhdCI6MTUzNDg2MTc1NywiZXhwIjoxNjIxMjYxNzU3LCJzY29wZSI6WyJsb2dpbiJdLCJ4c3JmVG9rZW4iOiIwYjUwYWJiZGVjMmMwNjc3ZjA3MjQxZjZmYjBhZmMyOCJ9.Tpgw4rAG-7jxyqOg6tYETwzqZ0IvM6BzIWgBFpPofUo'  
+-H 'Content-Type: application/json' 
+    --url http://localhost/my-style-app/api/vendors
+###
+curl --request GET
+
+-H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOm51bGwsInN1YiI6Ijk4NjE1NjI5NDgiLCJ0eXBlIjoiUHVibGljVXNlciIsImlhdCI6MTUzNDg2MTc1NywiZXhwIjoxNjIxMjYxNzU3LCJzY29wZSI6WyJsb2dpbiJdLCJ4c3JmVG9rZW4iOiIwYjUwYWJiZGVjMmMwNjc3ZjA3MjQxZjZmYjBhZmMyOCJ9.Tpgw4rAG-7jxyqOg6tYETwzqZ0IvM6BzIWgBFpPofUo'  
+-H 'Content-Type: application/json' 
+    --url http://localhost/my-style-app/api/vendor/1
+###
+#Bookings
+POST http://localhost/my-style-app/api/booking HTTP/1.1 
+ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOm51bGwsInN1YiI6Ijk4NjE1NjI5NDgiLCJ0eXBlIjoiUHVibGljVXNlciIsImlhdCI6MTUzNjU1MjYzMywiZXhwIjoxNjIyOTUyNjMzLCJzY29wZSI6WyJsb2dpbiJdLCJ4c3JmVG9rZW4iOiJlYmJmZWIwNDY4M2YxODczYjEwMjNmZmI3MzUwNGM0MCJ9.EBOblxMvMbzulfWEZRyAJB1xrRPAYYQYLmXz6wACjM4
+ content-type: application/json
+ 
+    {
+        "book_date":"2018-09-12",
+        "time_slot":"11:00 AM - 11:30 PM",
+        "vendor_id":1,
+        "book_service":"Hair Cutting",
+        "no_seat":1,
+        "tot_cost":250
+    }
+### 
