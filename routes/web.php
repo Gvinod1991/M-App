@@ -18,7 +18,7 @@
 Route::get('/', 'Auth\LoginController@Login');
 //Route::post('login', 'Auth\LoginController@Authenticate');
 Route::post('login', [ 'as' => 'login', 'uses'=>'Auth\LoginController@Authenticate']);
-Route::get('logout', 'Auth\LoginController@getLogout');
+Route::get('logout', [ 'as' => 'logout', 'uses'=>'Auth\LoginController@getLogout']);
 Route::get('passSet', 'Auth\LoginController@update');
 Route::group(['middleware' => 'web'], function()
 {
@@ -26,13 +26,19 @@ Route::get('index', function () {
     return view('layout/index');
 });
 });
-
-Route::get('viewVendor', 'AddVendorController@show');
-Route::post('addVendor', 'AddVendorController@createNewVendor');
-Route::get('addVendorForm', 'AddVendorController@showVendorFomr');
+Route::get('viewVendor', [ 'as' => 'viewVendor', 'uses'=>'AddVendorController@show']);
+Route::post('addVendor', [ 'as' => 'addVendor', 'uses'=>'AddVendorController@createNewVendor']);
+Route::get('addVendorForm', [ 'as' => 'addVendorForm', 'uses'=> 'AddVendorController@showVendorFomr']);
 Route::get('vendorProfile/{id}', 'AddVendorController@showVendorProfile');
-Route::post('addServices', 'AddVendorController@addServiceToDb');
-Route::post('addTimeslot', 'AddVendorController@addTimeslotToDb');
-Route::post('updateServices', 'AddVendorController@updateServiceToDb');
-Route::post('changeStatus', 'AddVendorController@changeSts');
-Route::post('updatebankdetails', 'AddVendorController@updateBank');
+Route::post('addServices', [ 'as' => 'addServices', 'uses'=> 'AddVendorController@addServiceToDb']);
+Route::post('addTimeslot', [ 'as' => 'addTimeslot', 'uses'=> 'AddVendorController@addTimeslotToDb']);
+Route::post('updateServices', [ 'as' => 'updateServices', 'uses'=> 'AddVendorController@updateServiceToDb']);
+Route::post('changeStatus', [ 'as' => 'changeStatus', 'uses'=>'AddVendorController@changeSts']);
+Route::post('updatebankdetails', [ 'as' => 'updatebankdetails', 'uses'=>'AddVendorController@updateBankdet']);
+Route::post('changeweekStatus', [ 'as' => 'changeweekStatus', 'uses'=>'AddVendorController@changeWeeksts']);
+
+///Routes to implemented
+Route::get('profile', [ 'as' => 'profile', 'uses'=>'AddVendorController@show']);
+Route::get('customerList', [ 'as' => 'customerList', 'uses'=>'AddVendorController@show']);
+Route::get('bookings', [ 'as' => 'bookings', 'uses'=>'AddVendorController@show']);
+Route::get('pending-bookings', [ 'as' => 'pending-bookings', 'uses'=>'AddVendorController@show']);

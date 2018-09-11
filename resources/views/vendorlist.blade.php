@@ -31,7 +31,7 @@
                 </div>            
                 <div class="col-md-6 col-sm-12 text-right">
                    
-                    <a href="javascript:void(0);" class="btn btn-sm btn-primary" title="">Add New</a>
+                    <a href="{{route('addVendorForm')}}" class="btn btn-sm btn-primary" title="">Add New</a>
                 </div>
             </div>
         </div>
@@ -41,7 +41,6 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="header">
-                            <h2>Basic Table <small>Basic example without any additional modification classes</small></h2>
                             <ul class="header-dropdown dropdown dropdown-animated scale-left">
                                 <li> <a href="javascript:void(0);" data-toggle="cardloading" data-loading-effect="pulse"><i class="icon-refresh"></i></a></li>
                                 <li><a href="javascript:void(0);" class="full-screen"><i class="icon-size-fullscreen"></i></a></li>
@@ -76,7 +75,7 @@
                                     <tbody>
                                        @foreach($vendors as $vendor)
                                                 <tr>
-                                                    <td>{{$vendor->name}}</td>
+                                                    <td>{{$vendor->shop_name}}</td>
                                                     <td>{{$vendor->addr}}</td>
                                                     <td>{{$vendor->city}}</td>
                                                     <td>{{$vendor->contact}}</td>
@@ -84,13 +83,7 @@
                                                     <td>{{$vendor->sts}}</td>
                                                     <td class="actions">
                                                
-											            <button class="btn btn-sm btn-icon btn-pure btn-default on-default button-remove"
-                                                        data-toggle="tooltip" data-original-title="View"><i class="icon-eye" aria-hidden="true"></i></a>
-                                                        <button class="btn btn-sm btn-icon btn-pure btn-default on-default m-r-5 button-edit"
-                                                        data-toggle="tooltip" data-original-title="Edit"><i class="icon-pencil" aria-hidden="true"></i></a>
-                                                        <button class="btn btn-sm btn-icon btn-pure btn-default on-default button-remove"
-                                                        data-toggle="tooltip" data-original-title="Remove"><i class="icon-trash" aria-hidden="true"></i></a>
-												
+											           <a href="vendorProfile/{{$vendor->id}}" class="has-arrow"><i class="icon-eye"></i><span>View</span></a>
                                                     </td>
                                                 </tr>
                                             @endforeach

@@ -69,4 +69,8 @@ class LoginController extends Controller
        echo Hash::make('admin#123');
       
     }
+    public function getLogout(Request $request)
+    {
+      return View('login');
+    }
 }

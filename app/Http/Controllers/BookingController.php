@@ -2,12 +2,21 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facedes\input;
 use Validator;
 use App\PublicUser;
 use App\BookingDetail;
-use DB;
-use Firebase\JWT\JWT;
-use Firebase\JWT\ExpiredException;
+use App\Vendor;
+use App\Services;
+use App\Timeslot;
+use App\Bankdetails;
+use App\Weekshedule;
+use App\Closerecord;
+use Datetime;
+use Carbon;
+
 class BookingController extends Controller{
 //Validation rule for the bookSeat fucntion
 private $rules = array(
@@ -47,5 +56,51 @@ public function bookSeat(Request $request){
             return response()->json(array('status'=>0,'message'=>$failure_message)); 
         } 
 }
+// Get Availibility of store  by date and shop id
+    //Thi will take two Request input. (book_date,vandor_id)
+    public function getAvailibility(Request $request)
+    {
+
+        $book_date = $request->book_date;
+        $vendor_id = $request->vendor_id;
+        $ymd_bookdate = DateTime::createFromFormat('d-m-Y',$book_date)->format('Y-m-d');
+
+        //This is for closing date checking, If get data than Shop is closed on that day.
+        //If it wii return data than shop is close that day
+        $vnd =  Closerecord::where('close_date',$ymd_bookdate)->where('vendor_id',$vendor_id)->where('is_trash',0)->get();
+
+        if($vnd->isEmpty())
+        {
+             //Convert to date;
+            $b_day = Carbon\Carbon::createFromFormat('Y-m-d', $ymd_bookdate,'Asia/Kolkata');
+            $dt = Carbon\Carbon::now();
+            $b_day = $b_day->toDayDateTimeString();
+            $myArray = explode(',', $b_day); 
+            $dayy = strtolower($myArray[0]);
+            // Check for day open-close {If the day status is -0 return Open}// If get data than shop is open , if no data found shop is close
+           //If it wii return data than shop is close that day
+            $avl_vnd =  Weekshedule::where($dayy,0)->where('vendor_id',$vendor_id)->get();
+          
+            if($avl_vnd->isEmpty())
+            {
+                // Get All Active Time Slots Of This Particular Member
+                $avl_timeslot =  Timeslot::where('vendor_id',$vendor_id)->where('is_trash',0)->where('is_enable',1)->get();
+                $res=array('status'=>1,"message"=>"Got Record");
+                return response()->json($avl_timeslot);
+            }
+            else
+            {
+                $res=array('status'=>0,"message"=>"Booking is not vailable in this day.");
+                return response()->json($res);
+                
+            }
+        }
+        else
+        {
+            $res=array('status'=>0,"message"=>"Booking is not vailable in this day.");
+            return response()->json($res);
+            
+        }
+    }
 
 }

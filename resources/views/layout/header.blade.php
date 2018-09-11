@@ -25,7 +25,7 @@
                                 <li>
                                     <a href="javascript:void(0);">
                                         <div class="media">
-                                            <img class="media-object " src="assets/images/xs/avatar4.jpg" alt="">
+                                            <img class="media-object " src="{{ asset('images/xs/avatar4.jpg') }}" alt="">
                                             <div class="media-body">
                                                 <span class="name">James Wert <small class="float-right">Just now</small></span>
                                                 <span class="message">Lorem ipsum Veniam aliquip culpa laboris minim tempor</span>

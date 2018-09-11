@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use App\Vendor;
 use App\Services;
 use App\Timeslot;
+use App\Bankdetails;
+use App\Weekshedule;
+use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+
 use Illuminate\Support\Facedes\input;
-
-
 class AddVendorController extends Controller
 {
     /**
@@ -48,11 +50,13 @@ class AddVendorController extends Controller
         $serv =  Services::where('vendor_id',$id)->where('is_trash', '=', 0)->get();
         $timeslot =  Timeslot::where('vendor_id',$id)->where('is_trash', '=', 0)->get();
         $bankdetails =  Bankdetails::where('vendor_id',$id)->get();
+        $weekshedule =  Weekshedule::where('vendor_id',$id)->get();
         $alldata = array();
         $alldata["vendors"]= $vnd;
         $alldata["service"]= $serv;
         $alldata["timeslot"]= $timeslot;
         $alldata["bankdetails"]= $bankdetails;
+        $alldata["week"]= $weekshedule;
         return view('vendorprofile',["data"=>$alldata]);
        // return view('vendorprofile')->with('vendors',$vnd);
        //return view('vendorprofile');
@@ -231,34 +235,52 @@ class AddVendorController extends Controller
                     return response()->json(['status'=>-1,'success'=>'InternalError']);
                 } 
 
-            
-
-           
         }
         
         
     }
     //================================================================================
-    //=============== For Update Services =========================================
-    public function updateServiceToDb(Request $request)
+      //================================ Add Time Slot ========================================================
+    public function updateBankdet(Request $request)
     {
+       
         $failure_message='Error !';
-        $validator = Validator::make($request->all(),$this->rules_addservice,$this->messages_addservice);
+        $validator = Validator::make($request->all(),$this->rules_bank,$this->messages_bank);
         if ($validator->fails())
         {
             return response()->json(array('status'=>0,'success'=>$validator->errors()));
         }
         else
         {
-            if(Services::where('id',$request->vid)->update(['service_name' => $request->service,'service_price'=>$request->price,'any_offer'=>$request->offer]))
-            {
-                return response()->json(['status'=>1,'success'=>'Data is successfully updated']);
-            }
-            else
-            {
-                return response()->json(['status'=>-1,'success'=>'InternalError']);
-            } 
+            $foo = array('account_no' => $request->acno,'account_holder'=> $request->holder,
+            'bank_name' => $request->bank,'branch_name' => $request->branch,'ifsc_code' => $request->ifsc);
+            
+         
+           if(Bankdetails::where('id',$request->vid)->update($foo))
+                {
+                    return response()->json(['status'=>1,'success'=>'Bank Details is successfully added']);
+                }
+                else
+                {
+                    return response()->json(['status'=>-1,'success'=>'InternalError']);
+                } 
+
         }
+        
+        
+    }
+    //================================================================================
+    //=============== Update Week Sts =========================================
+    public function changeWeeksts(Request $request)
+    {
+        if(Weekshedule::where('id',$request->id)->update(['sun' => $request->sun,'mon'=>$request->mon,'tue'=>$request->tue,'wed'=>$request->wed,'thu'=>$request->thu,'fri'=>$request->fri,'sat'=>$request->sat]))
+        {
+            return response()->json(['status'=>1,'success'=>'Status Changed successfully.']);
+        }
+        else
+        {
+            return response()->json(['status'=>-1,'success'=>'InternalError']);
+        } 
     }
 
     //=============== For Change Status =========================================
