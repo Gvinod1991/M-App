@@ -1,7 +1,7 @@
 //Configurations
 const config={
-    'apiEndpoint':'http://192.168.43.51/my-style-app/api/',
-    'public_image_url':'http://192.168.43.51/my-style-app/'
+    'apiEndpoint':'http://my-style-app.herokuapp.com/api/',
+    'public_image_url':'http://my-style-app.herokuapp.com/'
 }
 
 //Export the module

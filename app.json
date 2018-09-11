@@ -1,8 +1,19 @@
 {
   "expo": {
+    "name": "Your App Name",
+    "icon": "./images/logo_50.png",
+    "version": "0.1.0",
+    "slug": "my-style",
     "sdkVersion": "27.0.0",
+    "ios": {
+      "bundleIdentifier": "my-style"
+    },
+    "android": {
+      "package": "com.mystyle.mystyle"
+    },
     "androidStatusBar": {
       "backgroundColor": "#817F80"
     }
+
   }
 }
