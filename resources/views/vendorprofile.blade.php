@@ -1,4 +1,4 @@
- <!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <!-- Include Heaer-->
@@ -833,7 +833,7 @@
                     }
                 });
                jQuery.ajax({
-                  url: "{{ url('admin/addServices') }}",
+                  url: "{{ route('addServices') }}",
                   method: 'post',
                   data: 
                   {
@@ -881,7 +881,7 @@
                     }
                 });
                jQuery.ajax({
-                  url: "{{ url('admin/updatebankdetails') }}",
+                  url: "{{ route('updatebankdetails') }}",
                   method: 'post',
                   data: 
                   {
@@ -932,7 +932,7 @@
                     }
                 });
                jQuery.ajax({
-                  url: "{{ url('admin/addTimeslot') }}",
+                  url: "{{ route('addTimeslot') }}",
                   method: 'post',
                   data: 
                   {
@@ -981,7 +981,7 @@
                     }
                 });
                jQuery.ajax({
-                  url: "{{ url('admin/updateServices') }}",
+                  url: "{{ route('updateServices') }}",
                   method: 'post',
                   data: 
                   {
@@ -1030,7 +1030,7 @@
                     }
                 });
                jQuery.ajax({
-                  url: "{{ url('admin/changeStatus') }}",
+                  url: "{{ route('changeStatus') }}",
                   method: 'post',
                   data: 
                   {
@@ -1074,7 +1074,7 @@
                     }
                 });
                jQuery.ajax({
-                  url: "{{ url('admin/changeweekStatus') }}",
+                  url: "{{ route('changeweekStatus') }}",
                   method: 'post',
                   data: 
                   {
@@ -1093,17 +1093,15 @@
                         //alert(result.status);
                         if(result.status==1)
                         {
-                                jQuery('#weekSuc').show();
-                                jQuery('#weekSuc').html(result.success);
-                                setTimeout(function(){ location.reload(); }, 2000);
+                            jQuery('#weekSuc').show();
+                            jQuery('#weekSuc').html(result.success);
+                            setTimeout(function(){ location.reload(); }, 2000);
                         }
-                       
                         else
                         {
-                                jQuery('#weekErr').show();
-                                jQuery('#weekErr').html(result.success);
+                            jQuery('#weekErr').show();
+                            jQuery('#weekErr').html(result.success);
                         }
-                    
                   }
                 });
                   
