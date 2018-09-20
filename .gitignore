@@ -12,6 +12,8 @@
 .env.test.local
 .env.production.local
 /vendor
+/bootstrap
+/storage
 
 npm-debug.log*
 yarn-debug.log*
