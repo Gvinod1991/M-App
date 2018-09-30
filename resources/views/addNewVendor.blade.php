@@ -32,7 +32,7 @@
                             </div>
                         </div>
                         <div class="body">
-                            @if(sizeof(Session::get('errors') ) > 0 )
+                            @if(Session::get('errors') ))
                             {!! Html::ul(Session::get('errors'), array('class'=>'alert alert-danger errors')) !!}
                             @endif  
                             @if(Session::has('flash_message'))
