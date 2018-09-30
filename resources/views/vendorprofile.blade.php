@@ -52,7 +52,7 @@
                         <div class="body">
                             <div class="pricing-plan">
                             
-                                <img src="{{ url('public/uploads/'.$imgb) }}" alt="" class="pricing-img">
+                                <img src="{{ url('public/uploads/vendors/'.$imgb) }}" alt="" class="pricing-img">
                                 <h2 class="pricing-header">{{$shop_name}}</h2>
 									
                                <form enctype="multipart/form-data" id="upload_form" role="form" method="POST" action="" >
