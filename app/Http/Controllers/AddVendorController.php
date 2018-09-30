@@ -556,8 +556,8 @@ class AddVendorController extends Controller
             //Rename the uploaded file,To avoid name confusuion
             $new_name = time().$request->file('logo')->getClientOriginalName(); // Image Rename
             $new_name=str_replace(' ','',$new_name);//Removeing space between  image name
-            $data['logo'] ='uploads/'.$new_name; 
-            if($request->file('logo')->move(public_path('uploads'),$new_name))
+            $data['logo'] ='uploads/vendors/'.$new_name; 
+            if($request->file('logo')->move(public_path('uploads/vendors'),$new_name))
             {
                  if(Vendor::where('id',$request->vid)->update(['photo' => $new_name]))
                 {
