@@ -46,7 +46,7 @@ Route::get('editVendor/{id}',[
 Route::get('vendorProfile/{id}', 'AddVendorController@showVendorProfile');
 Route::post('addServices', [ 'as' => 'addServices', 'uses'=> 'AddVendorController@addServiceToDb']);
 Route::post('addTimeslot', [ 'as' => 'addTimeslot', 'uses'=> 'AddVendorController@addTimeslotToDb']);
-Route::post('updateServices', [ 'as' => 'updateServices', 'uses'=> 'AddVendorController@addServiceToDb']);
+Route::post('updateServices', [ 'as' => 'updateServices', 'uses'=> 'AddVendorController@updateServiceToDb']);
 Route::post('changeStatus', [ 'as' => 'changeStatus', 'uses'=>'AddVendorController@changeSts']);
 Route::post('updatebankdetails', [ 'as' => 'updatebankdetails', 'uses'=>'AddVendorController@updateBankdet']);
 Route::post('changeweekStatus', [ 'as' => 'changeweekStatus', 'uses'=>'AddVendorController@changeWeeksts']);

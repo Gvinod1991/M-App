@@ -82,7 +82,7 @@ class DayBlockController extends Controller
                         }
                         else
                         {
-                            $o1 = (object) ['tabid'=>$ip->id,'status' =>0 ,'servname'=>$i->service_name,'servid' =>$i->id,'vndid' =>$id];
+                            $o1 = (object) ['tabid'=>0,'status' =>0 ,'servname'=>$i->service_name,'servid' =>$i->id,'vndid' =>$id];
                             array_push($service_blk,$o1);
                         }
                         
@@ -187,7 +187,8 @@ class DayBlockController extends Controller
         $alldata["timeslot"]= $time_blk;
         $alldata["seatbl"]= $seat_blk;
         //dd($alldata);
-        return view('dailyBlockStatus',["data"=>$alldata,'vendor_id'=>$id]);
+        //$ymd_d = DateTime::createFromFormat('d-m-Y',$dt)->format('Y-m-d');
+        return view('dailyBlockStatus',["data"=>$alldata,'vendor_id'=>$id,'today'=>$dt]);
     }
     
     public function showCallender($id)
@@ -210,7 +211,68 @@ class DayBlockController extends Controller
         return view('viewCallender',["data"=>$alldata]);
       //
     }
-  
+
+    // Change Status for day block
+     public function changeStsDayBlock(Request $request)
+     {
+            if($request->bid==0)
+            {
+                 $serv = new Closerecord();
+                $serv->close_date = $request->bdate;
+                $serv->vendor_id = $request->vid;
+                 if($serv->save())
+                {
+                        return response()->json(['status'=>1,'success'=>'Status Changed Successfully.']);
+                }
+                else
+                {
+                    return response()->json(['status'=>-1,'success'=>'InternalError']);
+                }
+            }
+            else
+            {
+                if(Closerecord::where('id', $request->bid)->delete())
+                {
+                    return response()->json(['status'=>1,'success'=>'Status Changed Successfully']);
+                }
+                else
+                {
+                    return response()->json(['status'=>-1,'success'=>'InternalError']);
+                }
+            }
+           
+     }
+     // Change Status for day block
+     public function changeStsServiceBlock(Request $request)
+     {
+            if($request->bid==0)
+            {
+                 $serv = new Blockservice();
+                $serv->block_date = $request->bdate;
+                $serv->vendor_id = $request->vid;
+                 $serv->service_id = $request->sid;
+                 if($serv->save())
+                {
+                        return response()->json(['status'=>1,'success'=>'Status Changed Successfully.']);
+                }
+                else
+                {
+                    return response()->json(['status'=>-1,'success'=>'InternalError']);
+                }
+            }
+            else
+            {
+                if(Blockservice::where('id', $request->bid)->delete())
+                {
+                    return response()->json(['status'=>1,'success'=>'Status Changed Successfully']);
+                }
+                else
+                {
+                    return response()->json(['status'=>-1,'success'=>'InternalError']);
+                }
+            }
+           
+     }
 
 
 }

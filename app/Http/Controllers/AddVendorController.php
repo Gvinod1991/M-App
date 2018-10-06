@@ -153,8 +153,23 @@ class AddVendorController extends Controller
                 $data2['vendor_id']= $vendor->id;
                  if($bnk->fill($data2)->save())
                  {
-                    \Session()->flash('flash_message', 'Vendor saved successfully!');
-                    return redirect('/newVendor'); 
+                    $lg = new User();
+                    $data3 = $lg->toArray();
+                    $data3['email']=$request->input('email');
+                    $data3['sts']=1;
+                    $data3['name']=$request->input('shop_name');
+                    $data3['password']=bcrypt($request->input('contact'));
+                    $data3['type']= $vendor->id;
+                     if($lg->fill($data3)->save())
+                    {
+                        \Session()->flash('flash_message', 'Vendor saved successfully!');
+                        return redirect('/newVendor'); 
+                    }
+                    else
+                    {
+                        \Session()->flash('error_message', 'Vendor saving failed!');
+                        return redirect('/newVendor');
+                    }
                  }
                   else
                 {
@@ -311,6 +326,52 @@ class AddVendorController extends Controller
                 return response()->json(['status'=>-1,'success'=>'InternalError']);
             } 
         }
+    }
+    //================================================================================
+    //================================ Update Services ========================================================
+    public function updateServiceToDb(Request $request)
+    {
+        //dd($request->all());
+        $data=$request->all();
+
+        $failure_message='Error !';
+        $validator = Validator::make($request->all(),$this->rules_addservice,$this->messages_addservice);
+        if ($validator->fails())
+        {
+            return response()->json(array('status'=>0,'success'=>$validator->errors()));
+        }
+        //$serv = new Services();
+        //$serv->service_name = $request->service;
+        //$serv->service_price = $request->price;
+        //$serv->any_offer = $request->offer;
+        //$serv->vendor_id = $request->vid;
+        $service_image ="uploads/services/default.jpg";
+
+        if ($request->hasFile('file'))
+        {
+            $file = array('file' => $request->file('file'));
+            $validator = Validator::make($file,$this->service_image_rules);
+            if($validator->fails())
+            {
+                return response()->json(array('status'=>0,'message'=>$failure_message,'errors'=>$validator->errors()));
+            }
+        //Rename the uploaded file,To avoid name confusuion
+        $new_name = time().$request->file('file')->getClientOriginalName(); // Image Rename
+        $new_name=str_replace(' ','',$new_name);//Removeing space between  image name
+        $service_image='uploads/services/'.$new_name; 
+        if($request->file('file')->move(public_path('uploads/services'),$new_name)){
+           // $serv->service_image= $service_image;
+        }
+        }
+           
+         if(Services::where('vendor_id',$request->vid)->where('service_name',$request->service)->update(['service_price'=>$request->price,'any_offer'=>$request->offer,'service_image'=>$service_image]))
+            {
+                return response()->json(['status'=>1,'success'=>'Data updated successfully.']);
+            }
+            else
+            {
+                return response()->json(['status'=>-1,'success'=>'InternalError']);
+            } 
     }
     //================================================================================
         //================================ Add Time Slot ========================================================

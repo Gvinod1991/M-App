@@ -54,7 +54,7 @@
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('name', 'Service Given To') !!}
-                                    {!! Form::select('gender',array('Male' => 'Male', 'Female' => 'Female', 'Both' => 'Both'),$selected,['class'=>'form-control','required'=> 'required']) !!}
+                                    {!! Form::select('gender',array('Male' => 'Male', 'Female' => 'Female', 'Both' => 'Unisex'),$selected,['class'=>'form-control','required'=> 'required']) !!}
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('name', 'Owner Name') !!}
@@ -83,6 +83,14 @@
 								<div class="form-group">
                                     {!! Form::label('name', 'Contact No') !!}
                                     {!! Form::text('contact', null, ['class' => 'form-control','required'=> 'required']) !!}
+                                </div>
+                                <div class="form-group">
+                                    {!! Form::label('name', 'Opening Time') !!}
+                                    {!! Form::text('open_at', null, ['class' => 'form-control','placeholder' =>'09 AM/PM','required'=> 'required']) !!}
+                                </div>
+                                <div class="form-group">
+                                    {!! Form::label('name', 'Closing Time') !!}
+                                    {!! Form::text('close_at', null, ['class' => 'form-control','placeholder' =>'10 AM/PM','required'=> 'required']) !!}
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('name', 'Facebook Profile') !!}
