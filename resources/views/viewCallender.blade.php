@@ -101,12 +101,13 @@
         <div class="block-header">
             <div class="row clearfix">
                 <div class="col-md-12 col-sm-12">
-                    <h2>Calendar</h2>
+                 <?php  $xctp=\Session::get('shop_profile_name');$xcid=\Session::get('shop_profile_id');?>
+                    <h2>{{$xctp}}</h2>
                 </div>            
                 <div class="col-md-12 col-sm-12 text-right" >
-                     <a href="{{ url('/vendorProfile/'.$vendor_id) }}" class="btn btn-sm btn-info" title="">View Vendor</a>
-                    <a href="{{ url('/viewCallender/'.$vendor_id) }}" class="btn btn-sm btn-primary" title="">Block Callender</a>
-                   
+                     <a href="{{ url('/vendorProfile/'.$xcid) }}" class="btn btn-sm btn-info" title="">View Vendor</a>
+                    <a href="{{ url('/viewCallender/'.$xcid) }}" class="btn btn-sm btn-primary" title="">Block Callender</a>
+                     <a href="{{ url('/mybookings/'.$xcid) }}" class="btn btn-sm btn-primary" title="">My Bookings</a>
                 </div>
             </div>
         </div>

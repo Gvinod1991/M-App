@@ -1,4 +1,4 @@
-<!doctype html>
+ <!doctype html>
 <html lang="en">
 <head>
 <!-- Include Heaer-->
@@ -25,6 +25,7 @@
                          
                 <div class="col-md-12 col-sm-12 pull-right" >
                      <a href="{{ url('/vendorProfile/'.$vendor_id) }}" class="btn btn-sm btn-info" title="">View Vendor</a>
+                     <a href="{{ url('/viewCallender/'.$vendor_id) }}" class="btn btn-sm btn-primary" title="">Back</a>
                 </div>
             </div>
         </div>
@@ -33,7 +34,8 @@
 		
             <div class="row clearfix">
                 <div class="col-12">
-                    <h5>Others Details</h5>
+                    <?php  $xctp=\Session::get('shop_profile_name');?>
+                    <h2>{{$xctp}}</h2>
                     <hr>
                 </div>
                 <?php
@@ -164,8 +166,8 @@
                                             </td>
 											<td class="actions">
                                                
-                                                <button class="ser-edt btn btn-sm btn-icon btn-pure btn-default on-default m-r-5 button-edit" data-toggle="modal" data-target="#serviceEditModal"
-                                                data-toggle="tooltip" data-id="" data-name="" data-price="" data-offer="" data-original-title="Edit"><i class="icon-pencil" aria-hidden="true"></i>Change Status</a>
+                                                <button class="ser-time btn btn-sm btn-icon btn-pure btn-default on-default m-r-5 button-edit" data-toggle="modal" data-target="#yesno-time"
+                                                data-toggle="tooltip" data-id="{{$vendor->tabid}}" data-servname="{{$vendor->servname}}" data-servid="{{$vendor->servid}}" data-original-title="Edit"><i class="icon-pencil" aria-hidden="true"></i>Change Status</a>
                                              </td>
                                         </tr>
                                         @endforeach
@@ -205,8 +207,8 @@
                                             
 											<td class="actions">
                                                
-                                                <button class="ser-edt btn btn-sm btn-icon btn-pure btn-default on-default m-r-5 button-edit" data-toggle="modal" data-target="#serviceEditModal"
-                                                data-toggle="tooltip" data-id="" data-name="" data-price="" data-offer="" data-original-title="Edit"><i class="icon-pencil" aria-hidden="true"></i>Change Status</a>
+                                                <button class="seat-block btn btn-sm btn-icon btn-pure btn-default on-default m-r-5 button-edit" data-toggle="modal" data-target="#yesno-seat"
+                                                data-toggle="tooltip" data-id="{{$vendor->tabid}}" data-timeslot="{{$vendor->servname}}" data-slotid="{{$vendor->servid}}" data-avl="{{$vendor->avl}}" data-blk="{{$vendor->blk}}"  data-original-title="Edit"><i class="icon-pencil" aria-hidden="true"></i>Change Status</a>
                                              </td>
                                         </tr>
                                       @endforeach
@@ -312,6 +314,66 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                                             <button type="button" id="yesno_service_ok" class="btn btn-primary">Yes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                              <!-- Modal Yes-NO btn -->
+                            <div class="modal fade" id="yesno-time" tabindex="-1" role="dialog" aria-labelledby="yesno-time" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="yesno_title">Are you sure to change the status ?</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            
+                                            <p>Service Name : <span id="ystime" style="color:red"></span></p>
+                                              <input type = "hidden" id = "yesno_time_id" name = "yesno_time_id" value = "">
+                                             <input type = "hidden" id = "yesno_time_tbid" name = "yesno_time_tbid" value = "0">
+                                              <input type = "hidden" id = "yesno_time_vendor" name = "yesno_time_vendor" value = "{{$vendor_id}}">
+                                              <input type = "hidden" id = "yesno_time_date" name = "yesno_time_date" value = "{{$today}}">
+                                             
+                                        </div>
+                                         <div id="timeErrr" style="display:none" class="alert alert-danger" role="alert">A simple danger alert—check it out!</div>
+                                        <div id="timeSucc" style="display:none" class="alert alert-success" role="alert">A simple danger alert—check it out!</div>
+                                    
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                            <button type="button" id="yesno_time_ok" class="btn btn-primary">Yes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="yesno-seat" tabindex="-1" role="dialog" aria-labelledby="yesno-seat" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="yesno_title">Seat Block Status</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            
+                                            <p>Time Slot : <span id="dptime" style="color:red"></span></p>
+                                            <p>no of block seat :  <input type = "number" id = "yesno_seat_blk" name = "yesno_time_id" value = ""></p>
+                                           
+                                              <input type = "hidden" id = "yesno_seat_avl" name = "yesno_seat_id" value = "">
+                                               <input type = "hidden" id = "yesno_slot_id" name = "yesno_seat_id" value = "">
+                                             <input type = "hidden" id = "yesno_seat_tbid" name = "yesno_seat_tbid" value = "0">
+                                              <input type = "hidden" id = "yesno_seat_vendor" name = "yesno_seat_vendor" value = "{{$vendor_id}}">
+                                              <input type = "hidden" id = "yesno_seat_date" name = "yesno_seat_date" value = "{{$today}}">
+                                             
+                                        </div>
+                                         <div id="seatErrr" style="display:none" class="alert alert-danger" role="alert">A simple danger alert—check it out!</div>
+                                        <div id="seatSucc" style="display:none" class="alert alert-success" role="alert">A simple danger alert—check it out!</div>
+                                    
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" id="yesno_seat_ok" class="btn btn-primary">Save Changes</button>
                                         </div>
                                     </div>
                                 </div>
@@ -445,7 +507,139 @@
                   
              });
 
+               //=============================================================================
+              jQuery('.ser-time').click(function(e){
+                  
+                   var tbid = $(this).data("id") ;
+                   var servid = $(this).data("servid");
+                   var serv_name = $(this).data("servname");
+
+                   jQuery('#yesno_time_tbid').val(tbid);
+                   jQuery('#yesno_time_id').val(servid);
+                   jQuery('#ystime').text(serv_name);
+
+              });
+
+              //================================================================================
+               //Update Bank Details =========================
+            jQuery('#yesno_time_ok').click(function(e){
+                    jQuery('#timeErrr').hide();
+                    jQuery('#timeSucc').hide();
+                    e.preventDefault();
+                    $.ajaxSetup({
+                    headers: 
+                    {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    }
+                });
+               jQuery.ajax({
+                  url: "{{ url('/timeBlockchangeStatus') }}",
+                  method: 'post',
+                  data: 
+                  {
+                     bid: jQuery('#yesno_time_tbid').val(),
+                     bdate: jQuery('#yesno_time_date').val(),
+                     vid: jQuery('#yesno_time_vendor').val(),
+                     sid: jQuery('#yesno_time_id').val()
+                
+                  },
+                  success: function(result)
+                  {
+                        var pk = result.success;
+                    
+                        if(result.status==1)
+                        {
+                                jQuery('#timeSucc').show();
+                                jQuery('#timeSucc').html(result.success);
+                                setTimeout(function(){ location.reload(); }, 3000);
+                        }
+                        else if(result.status==0)
+                        {
+                                jQuery('#timeErrr').show();
+                                jQuery('#timeErrr').html(pk[Object.keys(pk)[0]]);
+                        }
+                        else
+                        {
+                                jQuery('#timeErrr').show();
+                                jQuery('#timeErrr').html(result.success);
+                        }
+                    
+                  }
+                });
+                  
+             });
+
+        //=================================================================================
+          //=============================================================================
+              jQuery('.seat-block').click(function(e){
+                  
+                   var tbid = $(this).data("id") ;
+                   var slotid = $(this).data("slotid");
+                    var slot_name = $(this).data("timeslot");
+                   var slot_blk = $(this).data("blk");
+                   var slot_avl = $(this).data("avl");
+
+                   jQuery('#yesno_seat_tbid').val(tbid);
+                   jQuery('#yesno_slot_id').val(slotid);
+                   jQuery('#yesno_seat_blk').val(slot_blk);
+                   jQuery('#yesno_seat_avl').val(slot_avl);
+                   jQuery('#dptime').text(slot_name);
+
+
+              });
+
          //=================================================================================    
+         //Update Bank Details =========================
+            jQuery('#yesno_seat_ok').click(function(e){
+                    jQuery('#seatErrr').hide();
+                    jQuery('#seatSucc').hide();
+                    e.preventDefault();
+                    $.ajaxSetup({
+                    headers: 
+                    {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    }
+                });
+               jQuery.ajax({
+                  url: "{{ url('/seatBlockchangeStatus') }}",
+                  method: 'post',
+                  data: 
+                  {
+                     bid: jQuery('#yesno_seat_tbid').val(),
+                     bdate: jQuery('#yesno_seat_date').val(),
+                     vid: jQuery('#yesno_seat_vendor').val(),
+                     sid: jQuery('#yesno_slot_id').val(),
+                     blk: jQuery('#yesno_seat_blk').val(),
+                     avl: jQuery('#yesno_seat_avl').val()
+                
+                  },
+                  success: function(result)
+                  {
+                        var pk = result.success;
+                    
+                        if(result.status==1)
+                        {
+                                jQuery('#seatSucc').show();
+                                jQuery('#seatSucc').html(result.success);
+                                setTimeout(function(){ location.reload(); }, 3000);
+                        }
+                        else if(result.status==0)
+                        {
+                                jQuery('#seatErrr').show();
+                                jQuery('#seatErrr').html(pk[Object.keys(pk)[0]]);
+                        }
+                        else
+                        {
+                                jQuery('#seatErrr').show();
+                                jQuery('#seatErrr').html(result.success);
+                        }
+                    
+                  }
+                });
+                  
+             });
+
+        //=================================================================================
          });
  </script>
       

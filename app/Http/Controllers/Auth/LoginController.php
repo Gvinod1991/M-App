@@ -53,8 +53,17 @@ class LoginController extends Controller
             \Session::put('user_id', $data->id);
            
             \Session::put('email', $data->email);
+            \Session::put('user_type', $data->type);
+           // dd($data->type);
+            if($data->type==0)
+            {
+                return redirect()->intended('/index');
+            }
+            else
+            {
+                return redirect()->intended('/vendorProfile/'.$data->type);
+            }
             
-            return redirect()->intended('/index');
         }
           return redirect('/')->withErrors([
             'email' => 'The email or the password is invalid. Please try again.',

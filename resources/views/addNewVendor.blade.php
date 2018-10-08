@@ -54,7 +54,7 @@
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('name', 'Service Given To') !!}
-                                    {!! Form::select('gender',array('Male' => 'Male', 'Female' => 'Female', 'Both' => 'Unisex'),$selected,['class'=>'form-control','required'=> 'required']) !!}
+                                    {!! Form::select('gender',array('Male' => 'Male', 'Female' => 'Female', 'Both' => 'Both'),$selected,['class'=>'form-control','required'=> 'required']) !!}
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('name', 'Owner Name') !!}

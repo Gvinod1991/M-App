@@ -43,6 +43,11 @@ class DayBlockController extends Controller
     
    public function showDailyEvents($id,$dt)
     {
+         $xtp=\Session::get('user_type');
+        if($xtp > 0)
+        {
+            $id = $xtp;
+        }
         $alldata = array();
         $daily_blk=array();
         $service_blk=array();
@@ -73,19 +78,24 @@ class DayBlockController extends Controller
             {
                 foreach($avl_services as $i)
                 {
+                    $t = 0;
                     foreach($block_serv as $ip)
                     {
                         if($i->id==$ip->service_id)
                         {
-                            $o1 = (object) ['tabid'=>$ip->id,'status' =>1 ,'servname'=>$i->service_name,'servid' =>$i->id,'vndid' =>$id];
-                            array_push($service_blk,$o1);
+                           $t = 1;
                         }
-                        else
-                        {
-                            $o1 = (object) ['tabid'=>0,'status' =>0 ,'servname'=>$i->service_name,'servid' =>$i->id,'vndid' =>$id];
-                            array_push($service_blk,$o1);
-                        }
-                        
+                      
+                    }
+                    if($t == 1)
+                    {
+                        $o1 = (object) ['tabid'=>$ip->id,'status' =>1 ,'servname'=>$i->service_name,'servid' =>$i->id,'vndid' =>$id];
+                        array_push($service_blk,$o1);
+                    }
+                    else
+                    {
+                        $o1 = (object) ['tabid'=>0,'status' =>0 ,'servname'=>$i->service_name,'servid' =>$i->id,'vndid' =>$id];
+                        array_push($service_blk,$o1);
                     }
                     
                 }
@@ -112,19 +122,24 @@ class DayBlockController extends Controller
             {
                 foreach($avl_timeslot as $i)
                 {
+                    $t = 0;
                     foreach($block_ts as $ip)
                     {
-                        if($i->id==$ip->timeslot_id)
-                        {
-                            $o2 = (object) ['tabid'=>$ip->id,'status' =>1 ,'servname'=>$i->timing,'maxseat'=>$i->max_limit_booking,'servid' =>$i->id,'vndid' =>$id];
-                            array_push($time_blk,$o2);
-                        }
-                        else
-                        {
-                            $o2 = (object) ['tabid'=>$ip->id,'status' =>0 ,'servname'=>$i->timing,'maxseat'=>$i->max_limit_booking,'servid' =>$i->id,'vndid' =>$id];
-                            array_push($time_blk,$o2);
-                        }
+                       if($i->id==$ip->timeslot_id)
+                       {
+                           $t = 1;
+                       }
                         
+                    }
+                    if($t == 1)
+                    {
+                        $o2 = (object) ['tabid'=>$ip->id,'status' =>1 ,'servname'=>$i->timing,'maxseat'=>$i->max_limit_booking,'servid' =>$i->id,'vndid' =>$id];
+                        array_push($time_blk,$o2);
+                    }
+                    else
+                    {
+                        $o2 = (object) ['tabid'=>0,'status' =>0 ,'servname'=>$i->timing,'maxseat'=>$i->max_limit_booking,'servid' =>$i->id,'vndid' =>$id];
+                        array_push($time_blk,$o2);
                     }
                     
                 }
@@ -151,20 +166,32 @@ class DayBlockController extends Controller
                 {
                     if($i->status == 0)
                     {
+                        $t=0;
+                        $s = 0;
+                        $tbid = 0;
                         foreach($block_seatt as $ix)
                         {
-                            if($i->servid==$ix->timeslot_id)
-                            {
-                                $s =  $ix->no_seat;
-                                $o3 = (object) ['tabid'=>0,'servname'=>$i->servname,'avl'=>$i->maxseat,'blk'=>$s,'servid' =>$i->servid,'vndid' =>$id];
-                                array_push($seat_blk,$o3);
-                            }
-                            else
-                            {
-                                $o3 = (object) ['tabid'=>0,'servname'=>$i->servname,'avl'=>$i->maxseat,'blk'=>0,'servid' =>$i->servid,'vndid' =>$id];
-                                array_push($seat_blk,$o3);
-                            }
+                             if($i->servid==$ix->timeslot_id)
+                             {
+                                 $t=1;
+                                 $s =  $ix->no_seat;
+                                 $tbid =$ix->id;
+                             }
                         }
+                         $o3 = (object) ['tabid'=>$tbid,'servname'=>$i->servname,'avl'=>$i->maxseat,'blk'=>$s,'servid' =>$i->servid,'vndid' =>$id];
+                        array_push($seat_blk,$o3);
+
+                        //if($i->servid==$ix->timeslot_id)
+                        //{
+                            
+                           // $o3 = (object) ['tabid'=>$tbid,'servname'=>$i->servname,'avl'=>$i->maxseat,'blk'=>$s,'servid' =>$i->servid,'vndid' =>$id];
+                           // array_push($seat_blk,$o3);
+                       // }
+                       // else
+                       // {
+                           // $o3 = (object) ['tabid'=>$tbid,'servname'=>$i->servname,'avl'=>$i->maxseat,'blk'=>$s,'servid' =>$i->servid,'vndid' =>$id];
+                           // array_push($seat_blk,$o3);
+                        //}
                         
                     }
                     
@@ -270,6 +297,95 @@ class DayBlockController extends Controller
                 {
                     return response()->json(['status'=>-1,'success'=>'InternalError']);
                 }
+            }
+           
+     }
+      // Change Status for day block
+     public function changeStsTimeBlock(Request $request)
+     {
+            if($request->bid==0)
+            {
+                 $serv = new Blocktimeslot();
+                $serv->block_date = $request->bdate;
+                $serv->vendor_id = $request->vid;
+                 $serv->timeslot_id = $request->sid;
+                 if($serv->save())
+                {
+                        return response()->json(['status'=>1,'success'=>'Status Changed Successfully.']);
+                }
+                else
+                {
+                    return response()->json(['status'=>-1,'success'=>'InternalError']);
+                }
+            }
+            else
+            {
+                if(Blocktimeslot::where('id', $request->bid)->delete())
+                {
+                    return response()->json(['status'=>1,'success'=>'Status Changed Successfully']);
+                }
+                else
+                {
+                    return response()->json(['status'=>-1,'success'=>'InternalError']);
+                }
+            }
+           
+     }
+
+     // Seat block Unit
+     public function seatBlock(Request $request)
+     {
+            if($request->blk > $request->avl)
+            {
+                return response()->json(['status'=>-1,'success'=>'You cant block the seat more than the availablity.']);
+            }
+
+            if($request->bid==0)
+            {
+                if($request->blk ==0)
+                {
+                    return response()->json(['status'=>-1,'success'=>'Please Enter a valid seat number for blocking .']);
+                }
+                 $serv = new Blockseat();
+                 $serv->block_date = $request->bdate;
+                 $serv->vendor_id = $request->vid;
+                 $serv->timeslot_id = $request->sid;
+                 $serv->no_seat = $request->blk;
+                 $serv->remarks = 'No Remarks';
+                 if($serv->save())
+                {
+                        return response()->json(['status'=>1,'success'=>'Status Changed Successfully.']);
+                }
+                else
+                {
+                    return response()->json(['status'=>-1,'success'=>'InternalError']);
+                }
+            }
+            else
+            {
+                if($request->blk == 0)
+                {
+                    if(Blockseat::where('id', $request->bid)->delete())
+                    {
+                        return response()->json(['status'=>1,'success'=>'Status Changed Successfully']);
+                    }
+                    else
+                    {
+                        return response()->json(['status'=>-1,'success'=>'InternalError']);
+                    }
+                }
+                else
+                {
+                    if(Blockseat::where('id',$request->bid)->update(['no_seat' => $request->blk]))
+                    {
+                        return response()->json(['status'=>1,'success'=>'Data is successfully added']);
+                    }
+                    else
+                    {
+                        return response()->json(['status'=>-1,'success'=>'InternalError']);
+                    } 
+                }
+                
             }
            
      }

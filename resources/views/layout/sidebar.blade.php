@@ -22,10 +22,13 @@
             </div>  
             <nav id="left-sidebar-nav" class="sidebar-nav">
                 <ul id="main-menu" class="metismenu">
+                <?php  $xtp=\Session::get('user_type');?>
+                 @if($xtp==0) 
                     <li><a href="{{ url('/index') }}"><i class="icon-home"></i><span>Dashboard</span></a></li>
                     <li><a href="{{route('vendors')}}"><i class="icon-users"></i><span>Vendors</span></a></li>
                     <li><a href="{{route('customers')}}"><i class="icon-user"></i><span>Custommers</span></a></li>
                     <li><a href="{{route('bookings')}}"><i class="icon-calendar"></i><span>Bookings</span></a></li>
+                @endif
                 </ul>
             </nav>     
         </div>

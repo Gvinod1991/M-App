@@ -51,8 +51,13 @@ Route::post('changeStatus', [ 'as' => 'changeStatus', 'uses'=>'AddVendorControll
 Route::post('updatebankdetails', [ 'as' => 'updatebankdetails', 'uses'=>'AddVendorController@updateBankdet']);
 Route::post('changeweekStatus', [ 'as' => 'changeweekStatus', 'uses'=>'AddVendorController@changeWeeksts']);
 Route::get('viewCallender/{id}', [ 'AddVendorController@changeWeeksts']);
+Route::post('dayBlockchangeStatus', [ 'as' => 'dayBlockchangeStatus', 'uses'=>'DayBlockController@changeStsDayBlock']);
+Route::post('serviceBlockchangeStatus', [ 'as' => 'serviceBlockchangeStatus', 'uses'=>'DayBlockController@changeStsServiceBlock']);
+Route::post('timeBlockchangeStatus', [ 'as' => 'timeBlockchangeStatus', 'uses'=>'DayBlockController@changeStsTimeBlock']);
+Route::post('seatBlockchangeStatus', [ 'as' => 'seatBlockchangeStatus', 'uses'=>'DayBlockController@seatBlock']);
 
 Route::get('viewCallender/{id}', 'AddVendorController@showCallender');
+Route::get('mybookings/{id}', 'BookingController@getBookingHistory');
 Route::get('dailyBlockingStatus/{id}/{dt}', 'DayBlockController@showDailyEvents');
 
 Route::post('changeprofilepic', [ 'as' => 'changeprofilepic', 'uses'=>'AddVendorController@uploadProfilePic']);

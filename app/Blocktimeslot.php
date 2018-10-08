@@ -16,7 +16,7 @@ class Blocktimeslot extends Model
     //Time Stamps
     public $timestamps = true;
 
-    protected $fillable = array('block_date','vendor_id','timeslot_id','no_seat','remarks','is_trash','created_at','updated_at');
+    protected $fillable = array('block_date','vendor_id','timeslot_id','remarks','is_trash','created_at','updated_at');
 
     
 }

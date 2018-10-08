@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Vendor;
+use App\User;
 use App\Services;
 use App\Timeslot;
 use App\Bankdetails;
@@ -98,7 +99,14 @@ class AddVendorController extends Controller
     
     public function showCallender($id)
     {
-       $aid = $id; 
+        
+
+        $xtp=\Session::get('user_type');
+        if($xtp > 0)
+        {
+            $id = $xtp;
+        }
+        $aid = $id;
        // Get day block data
         $alldata = array();
         $day_close =  Closerecord::where('vendor_id',$id)->where('is_trash',0)->get();
@@ -170,7 +178,7 @@ class AddVendorController extends Controller
                         \Session()->flash('error_message', 'Vendor saving failed!');
                         return redirect('/newVendor');
                     }
-                 }
+                    }
                   else
                 {
                     \Session()->flash('error_message', 'Vendor saving failed!');
@@ -195,6 +203,12 @@ class AddVendorController extends Controller
     // Show vendor profile
      public function showVendorProfile($id)
     {
+        $xtp=\Session::get('user_type');
+        if($xtp > 0)
+        {
+            $id = $xtp;
+        }
+                
         $vnd =  Vendor::where('id',$id)->get();
         $serv =  Services::where('vendor_id',$id)->where('is_trash', '=', 0)->get();
         $timeslot =  Timeslot::where('vendor_id',$id)->where('is_trash', '=', 0)->get();
@@ -328,7 +342,7 @@ class AddVendorController extends Controller
         }
     }
     //================================================================================
-    //================================ Update Services ========================================================
+    //================================ Add Services ========================================================
     public function updateServiceToDb(Request $request)
     {
         //dd($request->all());
@@ -563,43 +577,70 @@ class AddVendorController extends Controller
 
 //========================FOR API USE ===============================================
      //FOr API
-    public function showAll()
-    {
-        $vnd =  Vendor::where('is_trash',1)->where('sts','Active')->get();
-        if(!$vnd->isEmpty())
-        {
-             return response()->json($vnd);
-        }
-        else
-        {
-            $res=array('status'=>0,"message"=>"No data Found");
-            return response()->json($res);
-        }
-       // return view('vendorlist')->with('vendors',$vnd);
-     
+   //FOr API
+   public function showAll(Request $request)
+   {
+       $vnd =  Vendor::where('is_trash',1)->get();
+       if($vnd)
+       {
+           $res=array('status'=>1,"message"=>"Vendors fethed successfully",'vendors'=>$vnd);
+           return response()->json($res);
+       }
+       else
+       {
+           $res=array('status'=>0,"message"=>"No data Found");
+           return response()->json($res);
+       }
+   }
+   // Get All Data by shop id
+   public function showSingle($id,Request $request)
+   {
+       $vnd =  Vendor::where('id',$id)->first();
+       $serv =  Services::where('vendor_id',$id)->get();
+       $timeslot =  Timeslot::where('vendor_id',$id)->get();
+       $alldata = array();
+       $alldata["vendor"]= $vnd;
+       $alldata["service"]= $serv;
+       $alldata["timeslot"]= $timeslot;
+       if($vnd)
+       {
+           $res=array('status'=>1,"message"=>"Vendor details fetched successfully !",'vendorData'=>$alldata);
+           return response()->json($res);
+       }
+       else
+       {
+           $res=array('status'=>0,"message"=>"No data Found");
+           return response()->json($res);
+       }
     }
-    // Get All Data by shop id
-     public function showSingle($id)
-    {
-        $vnd =  Vendor::where('id',$id)->get();
-        $serv =  Services::where('vendor_id',$id)->get();
-        $timeslot =  Timeslot::where('vendor_id',$id)->get();
-        $alldata = array();
-        $alldata["vendors"]= $vnd;
-        $alldata["service"]= $serv;
-        $alldata["timeslot"]= $timeslot;
-        if($vnd)
-        {
-             return response()->json($alldata);
-        }
-        else
-        {
-            $res=array('status'=>0,"message"=>"No data Found");
-            return response()->json($res);
-        }
-       // return view('vendorlist')->with('vendors',$vnd);
-     
-    }
+    //Get City list
+    public function getCityList(Request $reqiuest){
+        $city_list=array('Bhubaneswar','Cuttack','Bhrahmapur',
+          'Sambalpur',
+          'Rourkela'
+       );        
+       $res=array('status'=>1,"message"=>"Cities fetched successfully",'city_list'=>$city_list);
+       return response()->json($res);
+   }
+   //Get Locality by city name
+   public function getLocality($city_name,Request $request){
+       if(!$city_name || $city_name=""){
+           $res=array('status'=>0,"message"=>"City name is required");
+           return response()->json($res);
+       }
+       $locations= Vendor::whereRaw('lower(city) like "%' . strtolower($city_name) . '%"')->distinct('locality')->select('locality')->get();
+       //$locations =  Vendor::whereRaw('LOWER(city) = ?', [strtolower($city_name)])->get();
+       if($locations)
+       {
+           $res=array('status'=>1,"message"=>"Localities fetched successfully",'localities'=>$locations);
+           return response()->json($res);
+       }
+       else
+       {
+           $res=array('status'=>0,"message"=>"No data Found");
+           return response()->json($res);
+       }
+   } 
     //============== Upload Profile pic ===================
     public function uploadProfilePic(Request $request)
     {

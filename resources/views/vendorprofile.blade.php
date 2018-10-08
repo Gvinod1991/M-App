@@ -17,7 +17,10 @@
  @include('layout.header')
 
  <!-- Left-Side bar-->
- @include('layout.sidebar')
+
+     @include('layout.sidebar')
+
+  
     @foreach($data["vendors"] as $vendor)
                   <?php $sts = $vendor->sts;$vid =$vendor->id;$imgb = $vendor->photo;$shop_name = $vendor->shop_name;
                   
@@ -30,6 +33,7 @@
                 <div class="col-md-12 col-sm-12 " >
                      <a href="{{ url('/vendorProfile/'.$vid) }}" class="btn btn-sm btn-info" title="">View Vendor</a>
                     <a href="{{ url('/viewCallender/'.$vid) }}" class="btn btn-sm btn-primary" title="">Block Callender</a>
+                     <a href="{{ url('/mybookings/'.$vid) }}" class="btn btn-sm btn-primary" title="">My Bookings</a>
                    
                 </div>
             </div>
@@ -41,7 +45,11 @@
               
                     <h5>Vendor Profile</h5>
                     <div style="margin-top:-30px"class="pull-right">
+                    <?php  $xtp=\Session::get('user_type');?>
+                   
+                    @if($xtp==0) 
                     <a href="{{route('vendors')}}"  class="btn btn-sm btn-primary" title=""><i class="icon-list"></i> Vendors list</a>
+                    @endif
                     {!! link_to_route('editVendor', 'Edit', [$vendor->id],['class'=>'btn btn-info','onclick'=>"javascript:return confirm('Are you sure want to edit?')"])  !!}
                     </div>
                     <hr>
@@ -54,7 +62,7 @@
                             
                                 <img src="{{ url('public/uploads/vendors/'.$imgb) }}" alt="" class="pricing-img">
                                 <h2 class="pricing-header">{{$shop_name}}</h2>
-									
+									<?php  \Session::put('shop_profile_name', $shop_name);\Session::put('shop_profile_id', $vid);?>
                                <form enctype="multipart/form-data" id="upload_form" role="form" method="POST" action="" >
                                  <input type="hidden" name="_token" value="{{ csrf_token()}}">
                                  <input type="hidden" name="vid" value="{{ $vid}}">
@@ -940,6 +948,7 @@
                     if(files){
                         formData.append('file', files);
                     }
+                    formData.append('service', jQuery('#service_edit').val());
                     formData.append('price', jQuery('#price_edit').val());
                     formData.append('service', jQuery('#service_edit').val());
                     formData.append('offer',jQuery('#offer_edit').val());

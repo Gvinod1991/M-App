@@ -232,12 +232,31 @@ class BookingController extends Controller
         
         
     }
+    //============================== Get Bookings Records ===========================
+    public function getBookingHistory($id)
+    {
+        
+          $book_list=false;
+            $book_list =  Booking::join('public_user','booking_details.customer_id','=','public_user.id')
+            ->where('booking_details.vendor_id','=', $id)
+            ->get();
+            return view('mybookings',["bookings"=>$book_list]);
+        
+        
+        //$vnd =  Vendor::where('is_trash',1)->get();
+        //return view('mybookings')->with('vendors',$vnd);
+    }
     //================================================================================
     /*
     *Method to get all bookings 
     */
     public function bookings(Request $request)
     {
+         $xtp=\Session::get('user_type');
+        if($xtp > 0)
+        {
+            $id = $xtp;
+        }
         $book_list=false;
         $book_list =  Booking::
         join('vendors','booking_details.vendor_id','=','vendors.id')
@@ -346,5 +365,44 @@ class BookingController extends Controller
             $res=array('status'=>0,"message"=>"No data Found");
             return response()->json($res);
         }
+    }
+    //=======================================================================================
+   // Default query parameter : http://localhost/my-style-app/api/public-user/getListShop/Bhubaneswar/NO/NO/-1/-1
+    public function getFilterList($city,$locality,$gender,$min,$max)
+    {
+        $query= DB::table('vendors')
+        ->select('*')
+        ->where('vendors.city', 'like', '%' . $city . '%');
+        
+        if($locality != 'NO')
+        {
+            $query->where('vendors.locality', 'like', '%' . $locality . '%') ;
+           
+        }
+        if($gender == 'Male' || $gender == 'Female' || $gender == 'Both' )
+        {
+            $query->where('vendors.gender', '=', $gender) ;
+           
+        }
+        if($min != -1 && $max != -1)
+        {
+          
+            $query->join('services','vendors.id','services.vendor_id');
+            $query->whereBetween('services.service_price', [$min, $max]);
+           
+        }
+
+        $data=$query->get();
+        if(sizeof($data)>0)
+        {
+            $res=array("status"=>1,"message"=>"Booking data retrived successfully!","data"=>$data);
+            return response()->json($res);
+        }
+        else
+        {
+            $res=array("status"=>0,"message"=>"Booking data retrival failed!");
+            return response()->json($res);
+        }
+      
     }
 }
