@@ -5,6 +5,7 @@ import { MapView } from 'expo';
 import LogoComponent from '../common/LogoComponent';
 import Loader from '../common/Loader';
 import config from '../config';
+import BackComponent from '../common/BackComponent';
 export default class ServiceDetailScreen extends React.Component {
   //static navigationOptions = { header: null }
   constructor(props) {
@@ -79,7 +80,9 @@ export default class ServiceDetailScreen extends React.Component {
       });
       if (action !== DatePickerAndroid.dismissedAction) {
         // Selected year, month (0-11), day
-        console.log(year,month,day);
+        month=month+1;
+        let strMonth= month < 10 ?'0'+month : month;
+        this.setState({pickerFromInput:year+'-'+strMonth+'-'+day})
       }
     } catch ({code, message}) {
       console.warn('Cannot open date picker', message);
@@ -104,16 +107,12 @@ export default class ServiceDetailScreen extends React.Component {
   }
   render() {
     console.disableYellowBox = true;
-    const Left = ({ onPress }) => (
-      <TouchableHighlight onPress={onPress}>
-       <Icon name="arrow-left" type="font-awesome" color="#FF3B70" />
-      </TouchableHighlight>
-    ); 
+   
     const { goBack } = this.props.navigation;
     return (
       <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
       <Loader loading={this.state.loading} />
-      <Header leftComponent={<Left onPress={() => goBack()} />} outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFF'}}  centerComponent={<LogoComponent />}/> 
+      <Header leftComponent={<BackComponent navigation={this.props.navigation} />} outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFF'}}  centerComponent={<LogoComponent />}/> 
       <ScrollView> 
         {
       this.state.vendor && 
@@ -163,7 +162,20 @@ export default class ServiceDetailScreen extends React.Component {
             <View style={{paddingTop:30,padding:5}}>
               <Text style={{textAlign:'center',fontSize:25,borderBottomWidth:2,borderBottomColor:'#FF3B70'}} h2>Locate us @</Text>
                 <View style={{paddingTop:20,flexDirection:'row',justifyContent:"space-between"}}>
-                <Image source={require('../images/map.png') }/>
+                {//<Image source={require('../images/map.png') }>
+                }
+                <MapView
+                      style={{
+                       width:500,
+                       height:500
+                      }}
+                      initialRegion={{
+                        latitude: 37.78825,
+                        longitude: -122.4324,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421
+                      }}
+                    />
                 </View>
             </View>
             }
@@ -190,12 +202,22 @@ export default class ServiceDetailScreen extends React.Component {
                   titleStyle={{fontSize:26,color:'#FF3B70'}}
                   >
                   <View style={{paddingTop:10,flexDirection:'row',justifyContent:"space-between"}} >
-                  <Icon
-                   color="#FF3B70" 
-                    name="calendar-check-o" type="font-awesome" onPress={() => this.openDatePicker()}/>
+                  <View style={{flexDirection:'column'}}>
+                    <Text>Pick Date</Text>
+                    <Icon
+                    color="#111" 
+                      name="calendar-check-o" type="font-awesome" onPress={() => this.openDatePicker()}/>
+                    <Text>{this.state.pickerFromInput}</Text>
+                  </View>
+                  <View style={{flexDirection:'column'}}>
+                    <Text>Pick Time</Text>
                    <Icon
-                   color="#FF3B70" 
+                   color="#111" 
                     name="clock-o" type="font-awesome" onPress={() => this.openTimePicker()}/>
+                     <Text>{this.state.pickerFromInput}</Text>
+                  </View>
+                  <View style={{flexDirection:'column'}}>
+                    <Text>No Of seats</Text>
                     <Picker
                       selectedValue={this.state.seats}
                       style={{ height: 50, width: 100 }}
@@ -204,6 +226,8 @@ export default class ServiceDetailScreen extends React.Component {
                       <Picker.Item label="2" value="2" />
                       <Picker.Item label="3" value="3" />
                     </Picker>
+                    <Text>{this.state.seats}</Text>
+                  </View>
                   </View>
                   
                   <View style={{paddingTop:30,padding:5,flexDirection:'row',justifyContent:"space-between"}}>

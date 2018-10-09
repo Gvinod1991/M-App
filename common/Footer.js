@@ -61,6 +61,7 @@ const Footer = createBottomTabNavigator(
             size={30}
             type="font-awesome"
             color={tintColor}
+            //onPress={ this.props.navigation.openDrawer()}
           />
         ),
       },

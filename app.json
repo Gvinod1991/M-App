@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "MyStyle",
-    "icon": "./images/logo_50.png",
+    "icon": "./images/app_logo.png",
     "version": "0.1.0",
     "slug": "my-style",
     "sdkVersion": "27.0.0",
@@ -9,11 +9,14 @@
       "bundleIdentifier": "com.mystyle.mystyle"
     },
     "android": {
-      "package": "com.mystyle.mystyle"
+      "package": "com.mystyle.mystyle",
+      "config": {
+        "googleMaps": { "apiKey": "AIzaSyCrE-p2anb6f40oh3P-lt3x3yWCNTWo7Jw" }   
+     }
     },
     "androidStatusBar": {
       "backgroundColor": "#817F80"
-    }
-
+    },
+    "orientation": "portrait"
   }
 }

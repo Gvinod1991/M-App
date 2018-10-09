@@ -6,6 +6,7 @@ import CodeInput from 'react-native-confirmation-code-input';
 import LogoComponent from '../common/LogoComponent';
 import Loader from '../common/Loader';
 import config from '../config';
+import Carausal from '../common/Carausal';
 export default class OtpScreen extends React.Component {
   static navigationOptions = { header: null }
   constructor(props) {
@@ -47,14 +48,17 @@ export default class OtpScreen extends React.Component {
             console.error(error);
           });
   }
+  resendOtp(){
+
+  }
   render() {
     console.disableYellowBox = true;
     return (
       <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
       <Loader loading={this.state.loading} />
        <Header  outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFF'}}  centerComponent={<LogoComponent />} />
+      <Carausal />
       <ScrollView>
-      <Card image={require('../images/banner.jpg')} style={{borderWidth:0.1}} imageStyle={{height:300}} wrapperStyle={{margin:0,padding:0}} containerStyle={{borderWidth:0.5,height:250,margin:0,padding:0}} ></Card>
         <FormLabel labelStyle={{fontSize:18}}>Enter your OTP</FormLabel>
         <CodeInput
         ref="codeInputRef1"
@@ -69,10 +73,9 @@ export default class OtpScreen extends React.Component {
         onFulfill={(code) => this._checkOtp(code)}
         keyboardType = 'numeric'
       />
-      <Text style={{textAlign: 'center',fontWeight: 'bold',fontSize: 18,paddingTop:10}}>Resend OTP</Text>
+      <Text onPress={()=>resendOtp()} style={{textAlign: 'center',fontWeight: 'bold',fontSize: 18,paddingTop:10}}>Resend OTP</Text>
       <Text >{this.state.error}</Text>
           </ScrollView>
-      
       </View>
     );
   }
