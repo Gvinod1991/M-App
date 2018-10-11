@@ -28,6 +28,7 @@
                     <li><a href="{{route('vendors')}}"><i class="icon-users"></i><span>Vendors</span></a></li>
                     <li><a href="{{route('customers')}}"><i class="icon-user"></i><span>Custommers</span></a></li>
                     <li><a href="{{route('bookings')}}"><i class="icon-calendar"></i><span>Bookings</span></a></li>
+                    <li><a href="{{route('coupons')}}"><i class="icon-tag"></i><span>Coupons</span></a></li>
                 @endif
                 </ul>
             </nav>     

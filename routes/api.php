@@ -30,6 +30,7 @@ Route::get('/city-list', 'AddVendorController@getCityList');
 Route::get('/locallity-list/{city_name}', 'AddVendorController@getLocality');
 Route::get('/price-range', 'BookingController@getPricerange');
 Route::get('/public-user/getListShop/{city}/{locality}/{gender}/{min}/{max}', 'BookingController@getFilterList');
+
 //Route::middleware('jwt.auth')->post('/booking', 'BookingController@bookSeat');
 
 Route::post('/public-user/checkavailability', 'BookingController@getAvailibility');
@@ -40,4 +41,6 @@ Route::post('/public-user/cancelbooking', 'BookingController@cancelBooking');
 Route::post('/public-user/mfsearch', 'BookingController@genderSearch');
 Route::post('/public-user/bycitysearch', 'BookingController@citySearch');
 Route::post('/public-user/bycity-localitysearch', 'BookingController@cityWithlocalitySearch');
+Route::get('/public-user/getAllValidCoupons', 'CouponController@showAllValidCoupons');
+Route::get('/public-user/applyCoupon/{code}', 'CouponController@getCouponbyCode');
 

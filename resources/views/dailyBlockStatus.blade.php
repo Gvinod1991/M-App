@@ -61,7 +61,7 @@
                                     @foreach($data["dayblock"] as $vendor)
                                         <?php  $rid = 0;?>
                                         <tr>
-                                            <td>26-09-2018</td>
+                                            <td>{{$today}}</td>
                                             <td>
                                            @if($vendor->status ==0) 
                                             <span class="badge badge-success">Open</span>

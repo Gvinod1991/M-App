@@ -55,6 +55,9 @@ Route::post('dayBlockchangeStatus', [ 'as' => 'dayBlockchangeStatus', 'uses'=>'D
 Route::post('serviceBlockchangeStatus', [ 'as' => 'serviceBlockchangeStatus', 'uses'=>'DayBlockController@changeStsServiceBlock']);
 Route::post('timeBlockchangeStatus', [ 'as' => 'timeBlockchangeStatus', 'uses'=>'DayBlockController@changeStsTimeBlock']);
 Route::post('seatBlockchangeStatus', [ 'as' => 'seatBlockchangeStatus', 'uses'=>'DayBlockController@seatBlock']);
+Route::post('couponChangeStatus', [ 'as' => 'couponChangeStatus', 'uses'=>'CouponController@changeCpsts']);
+Route::post('couponDelete', [ 'as' => 'couponDelete', 'uses'=>'CouponController@delCpsts']);
+Route::post('addCoupon', [ 'as' => 'addCoupon', 'uses'=>'CouponController@addNewCp']);
 
 Route::get('viewCallender/{id}', 'AddVendorController@showCallender');
 Route::get('mybookings/{id}', 'BookingController@getBookingHistory');
@@ -63,4 +66,6 @@ Route::get('dailyBlockingStatus/{id}/{dt}', 'DayBlockController@showDailyEvents'
 Route::post('changeprofilepic', [ 'as' => 'changeprofilepic', 'uses'=>'AddVendorController@uploadProfilePic']);
 Route::get('customers',[ 'as' => 'customers','uses'=>'PublicUserController@customerList']);
 Route::get('bookings',[ 'as' => 'bookings','uses'=>'BookingController@bookings']);
+Route::get('coupons',[ 'as' => 'coupons','uses'=>'CouponController@show']);
+
 });
