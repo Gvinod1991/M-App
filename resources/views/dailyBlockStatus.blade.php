@@ -359,7 +359,7 @@
                                         <div class="modal-body">
                                             
                                             <p>Time Slot : <span id="dptime" style="color:red"></span></p>
-                                            <p>no of block seat :  <input type = "number" id = "yesno_seat_blk" name = "yesno_time_id" value = ""></p>
+                                            <p>No of block seat :  <input type = "number" class="form-control" id = "yesno_seat_blk" name = "yesno_time_id" value = ""></p>
                                            
                                               <input type = "hidden" id = "yesno_seat_avl" name = "yesno_seat_id" value = "">
                                                <input type = "hidden" id = "yesno_slot_id" name = "yesno_seat_id" value = "">

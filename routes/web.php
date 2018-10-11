@@ -58,6 +58,7 @@ Route::post('seatBlockchangeStatus', [ 'as' => 'seatBlockchangeStatus', 'uses'=>
 Route::post('couponChangeStatus', [ 'as' => 'couponChangeStatus', 'uses'=>'CouponController@changeCpsts']);
 Route::post('couponDelete', [ 'as' => 'couponDelete', 'uses'=>'CouponController@delCpsts']);
 Route::post('addCoupon', [ 'as' => 'addCoupon', 'uses'=>'CouponController@addNewCp']);
+Route::post('confirmCode', [ 'as' => 'confirmCode', 'uses'=>'BookingController@confirmBookCode']);
 
 Route::get('viewCallender/{id}', 'AddVendorController@showCallender');
 Route::get('mybookings/{id}', 'BookingController@getBookingHistory');

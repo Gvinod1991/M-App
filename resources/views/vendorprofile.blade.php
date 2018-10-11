@@ -49,8 +49,9 @@
                    
                     @if($xtp==0) 
                     <a href="{{route('vendors')}}"  class="btn btn-sm btn-primary" title=""><i class="icon-list"></i> Vendors list</a>
-                    @endif
+                   
                     {!! link_to_route('editVendor', 'Edit', [$vendor->id],['class'=>'btn btn-info','onclick'=>"javascript:return confirm('Are you sure want to edit?')"])  !!}
+                    @endif
                     </div>
                     <hr>
                     
@@ -75,7 +76,7 @@
                         </div>
                         
                     </div>
-                      
+                       @if($xtp==0) 
                     <h5>Status : 
                      @if($sts =='Active') 
                     <span class="badge badge-success">{{$sts}}</span>    <a href="#" data-id="{{$vid}}" data-status="{{$sts}}" data-toggle="modal" data-target="#yesno" class="btn act btn-sm btn-primary" title="">De-Active</a>
@@ -83,6 +84,7 @@
                     <span class="badge badge-danger">{{$sts}}</span>    <a href="#" data-id="{{$vendor->id}}" data-status="{{$vendor->is_enable}}" data-toggle="modal" data-target="#yesno" class="btn act btn-sm btn-primary" title="">Active</a>
                     @endif
                     </h5>
+                     @endif
                 </div>
                 <div class="col-lg-8 col-md-12">
                      @foreach($data["vendors"] as $vendor)
@@ -152,6 +154,7 @@
                                
 								<div class="table-responsive">
                                 <table class="table">
+                                 @if($xtp==0) 
                                     <thead>
                                         <tr>
                                             
@@ -180,10 +183,29 @@
                                         </tr>
                                         @endforeach
                                     </tbody>
+                                    @else
+                                    <thead>
+                                        <tr>
+                                            
+                                            <th>SERVICES</th>
+                                         
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                         @foreach($data["service"] as $vendor)
+                                        <tr>
+                                            
+                                            <td>{{$vendor->service_name}}</td>
+                                         
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                    @endif
                                 </table>
                             </div>
-                               
+                                @if($xtp==0) 
                                 <a href="javascript:void(0);" class="btn btn-outline-secondary" data-toggle="modal" data-target="#serviceModal">Add New</a>
+                                 @endif
                             </div>
                         </div>
                     </div>
@@ -204,8 +226,9 @@
                                             <th>TIME SLOTS</th>
                                             <th>MAX-BOOKING-LIMIT</th>
                                           
-                                           
+                                           @if($xtp==0)
 											<th>ACTION</th>
+                                            @endif
                                         </tr>
                                        
                                     </thead>
@@ -216,19 +239,21 @@
                                             <td>{{$vendor->timing}}</td>
                                             <td>{{$vendor->max_limit_booking}}</td>
                                            
-                                            
+                                            @if($xtp==0)
 											<td class="actions">
                                                
                                                 	<button class="time-del btn btn-sm btn-icon btn-pure btn-default on-default button-remove"data-id="{{$vendor->id}}" data-status="{{$vendor->is_trash}}" data-toggle="modal" data-target="#yesno"
                                                 data-toggle="tooltip" data-original-title="Remove"><i class="icon-trash" aria-hidden="true"></i></a>
                                             </td>
+                                            @endif
                                         </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
                             </div>
-                               
+                               @if($xtp==0) 
                                 <a href="javascript:void(0);" id="addTimeslot" class="btn btn-outline-secondary" data-toggle="modal" data-target="#timeModal">Add New</a>
+                                 @endif
                             </div>
                         </div>
                     </div>
@@ -263,9 +288,11 @@
                                             @endif
                                             </td>
                                             <td>
+                                             @if($xtp==0)
                                             <button class="daily btn btn-sm btn-icon btn-pure btn-default on-default button-remove" data-day="sun" data-status="{{$vendor->sun}}" data-toggle="modal" data-target="#weekyesno"
                                                 data-toggle="tooltip" data-original-title="Disable"><i class="icon-lock" aria-hidden="true"></i></a>
-											</td>
+											@endif
+                                            </td>
                                          </tr>
                                          <tr>
                                             <td>MON</td>
@@ -277,9 +304,11 @@
                                             @endif
                                             </td>
                                             <td>
+                                             @if($xtp==0)
                                             <button class="daily btn btn-sm btn-icon btn-pure btn-default on-default button-remove" data-day="mon" data-status="{{$vendor->mon}}" data-toggle="modal" data-target="#weekyesno"
                                                 data-toggle="tooltip" data-original-title="Disable"><i class="icon-lock" aria-hidden="true"></i></a>
-											</td>
+											@endif
+                                            </td>
                                          </tr>
                                          <tr>
                                             <td>TUE</td>
@@ -291,9 +320,11 @@
                                             @endif
                                             </td>
                                             <td>
+                                            @if($xtp==0)
                                             <button class="daily btn btn-sm btn-icon btn-pure btn-default on-default button-remove" data-day="tue" data-status="{{$vendor->tue}}" data-toggle="modal" data-target="#weekyesno"
                                                 data-toggle="tooltip" data-original-title="Disable"><i class="icon-lock" aria-hidden="true"></i></a>
-											</td>
+											@endif
+                                            </td>
                                          </tr>
                                          <tr>
                                             <td>WED</td>
@@ -305,9 +336,11 @@
                                             @endif
                                             </td>
                                             <td>
+                                            @if($xtp==0)
                                             <button class="daily btn btn-sm btn-icon btn-pure btn-default on-default button-remove" data-day="wed" data-status="{{$vendor->wed}}" data-toggle="modal" data-target="#weekyesno"
                                                 data-toggle="tooltip" data-original-title="Disable"><i class="icon-lock" aria-hidden="true"></i></a>
-											</td>
+											@endif
+                                            </td>
                                          </tr>
                                          <tr>
                                             <td>THU</td>
@@ -319,9 +352,11 @@
                                             @endif
                                             </td>
                                             <td>
+                                            @if($xtp==0)
                                             <button class="daily btn btn-sm btn-icon btn-pure btn-default on-default button-remove" data-day="thu" data-status="{{$vendor->thu}}" data-toggle="modal" data-target="#weekyesno"
                                                 data-toggle="tooltip" data-original-title="Disable"><i class="icon-lock" aria-hidden="true"></i></a>
-											</td>
+											@endif
+                                            </td>
                                          </tr>
                                          <tr>
                                             <td>FRI</td>
@@ -333,9 +368,11 @@
                                             @endif
                                             </td>
                                             <td>
+                                            @if($xtp==0)
                                             <button class="daily btn btn-sm btn-icon btn-pure btn-default on-default button-remove" data-day="fri" data-status="{{$vendor->fri}}" data-toggle="modal" data-target="#weekyesno"
                                                 data-toggle="tooltip" data-original-title="Disable"><i class="icon-lock" aria-hidden="true"></i></a>
-											</td>
+											@endif
+                                            </td>
                                          </tr>
                                          <tr>
                                             <td>SAT</td>
@@ -347,9 +384,11 @@
                                             @endif
                                             </td>
                                             <td>
+                                            @if($xtp==0)
                                             <button class="daily btn btn-sm btn-icon btn-pure btn-default on-default button-remove" data-day="sat" data-status="{{$vendor->sat}}" data-toggle="modal" data-target="#weekyesno"
                                                 data-toggle="tooltip" data-original-title="Disable"><i class="icon-lock" aria-hidden="true"></i></a>
-											</td>
+											@endif
+                                            </td>
                                          </tr>
                                         @endforeach
                                     </tbody>
@@ -409,8 +448,9 @@
                                      </thead>
                                 </table>
                             </div>
-                               
+                               @if($xtp==0)
                                 <a href="javascript:void(0);" id="addTimeslot" class="btn btn-outline-secondary" data-toggle="modal" data-target="#bankModal">Update Now</a>
+                                @endif
                             </div>
                         </div>
                     </div>
