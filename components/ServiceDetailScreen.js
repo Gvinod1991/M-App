@@ -1,11 +1,12 @@
 import React from 'react';
 import {TouchableHighlight,Text, View,ScrollView,AsyncStorage,StyleSheet,Image,Modal,Dimensions,DatePickerAndroid,TimePickerAndroid,Picker} from 'react-native';
-import { Header,Avatar,Card, Button, Icon} from 'react-native-elements';
+import { Header,Avatar,Card, Button, Icon,FormInput,FormValidationMessage,FormLabel} from 'react-native-elements';
 import { MapView } from 'expo';
 import LogoComponent from '../common/LogoComponent';
 import Loader from '../common/Loader';
 import config from '../config';
 import BackComponent from '../common/BackComponent';
+import PayuMoney from 'react-native-payumoney';
 export default class ServiceDetailScreen extends React.Component {
   //static navigationOptions = { header: null }
   constructor(props) {
@@ -18,7 +19,7 @@ export default class ServiceDetailScreen extends React.Component {
       message:"",
       loader:false,
       isModalOpen:false,
-      seats:0
+      seats:['0'],
         }   
     this._retrieveuserToken();
   }
@@ -29,17 +30,18 @@ export default class ServiceDetailScreen extends React.Component {
       if (userToken !== null) {
         // We have data!!
         this.getVendor(userToken);
+        this.getInventory(userToken);
         this.setState({ userToken: userToken})
       }
       } catch (error) {
         // Error retrieving data
       }
   }
+  
   //Function to get the user details
   getVendor = (userToken) => {
     
     const url=config.apiEndpoint+"vendor/"+this.props.navigation.state.params.vendorId;
-    //const image_api_url='http://192.168.43.51/my-style-app/public';
     fetch(url, {
       method: 'GET',
       headers: {
@@ -52,10 +54,7 @@ export default class ServiceDetailScreen extends React.Component {
         this.setState({loading:false});
         if(responseJson.status==1)
         {
-          this.setState({ vendor: responseJson.vendorData.vendor});
-          this.setState({ service: responseJson.vendorData.service});
-          this.setState({ timeslot: responseJson.vendorData.timeslot});
-          
+          this.setState({ vendor: responseJson.vendorData.vendor});        
         }
         else
         {
@@ -66,8 +65,84 @@ export default class ServiceDetailScreen extends React.Component {
         console.error(error);
       });
   }
-  bookNow=()=>{
+  //Function to get the user details
+  getInventory = (userToken) => {
+    const url=config.apiEndpoint+"public-user/checkavailability";
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer '+userToken
+      },
+      body: JSON.stringify({
+        book_date:this.state.pickerFromInput,
+        vendor_id:this.props.navigation.state.params.vendorId
+      })
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({loading:false});
+        if(responseJson.status==1)
+        {
+          this.setState({ service: responseJson.vendorData.service});
+          this.setState({ timeslot: responseJson.vendorData.timeslot});
+        }
+        else
+        {
+          this.setState({ message: "No services active for this saloon"});
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+  bookNow=(service_name,service_id,service_price)=>{
     this.setState({isModalOpen:true});
+    this.setState({selectedService:service_name});
+    this.setState({selectedServiceId:service_id});
+    this.setState({service_price:service_price});
+    this.setState({pickerFromInput:this.getNextDate(new Date(),0)});
+  }
+    //Get the next date from first argument with provided length of next date from today in 2nd argumnet
+    getNextDate = (today, length) => {
+      var myDate = new Date(today); //create new date from the original
+      myDate.setDate(myDate.getDate() + length); //set new date 7 days from now(the correct 7 days)
+      var fullYear = myDate.getFullYear(); //store fullyear (IE 2010) to fullYear var
+      var month = ((myDate.getMonth()) < 9) ? ('0' + (myDate.getMonth() + 1)) : myDate.getMonth() + 1; //store 2 digit month to month var
+      var day = (myDate.getDate() < 10) ? ('0' + myDate.getDate()) : myDate.getDate(); //store 2 digit day to day var
+      var myNewDate = day + '-' + month + '-' + fullYear; //combine all 3 variables and store the output to myNewDate var.
+      return myNewDate;
+  }
+  closeBookModal = () =>{
+    this.setState({isModalOpen:false});
+  }
+  setSeats = (time_slot_id) => {
+    this.setState({time_slot_id : time_slot_id});
+    this.state.timeslot.map((time_slot)=>{
+      if(time_slot.id==time_slot_id){
+        this.setState({time_slot_name:time_slot.timing});
+        let seats=[];
+        for(let i=1;i<=time_slot.max_limit_booking;i++){
+          seats.push(i.toString());
+        }
+        this.setState({seats: seats.length> 0 ? seats :false});
+      }
+    });
+  }
+  //Set the seat count in state and calculate the total amount to pay
+  setSeatCount = (seat_count) => {
+    this.setState({selectedSeat : seat_count});
+    this.setState({total_amount: seat_count * this.state.service_price});
+  }
+  //to handle state of the user inputs
+  handleChange(value,name) {
+    this.setState({[name]: value})//dynamically set the state
+  }
+  //Get JS date from "YYYY-mm-dd" formated date
+  getJsDate = (date) => {
+    var daArr = [];
+    daArr = date.split("-");
+    return new Date(daArr[2], parseInt(daArr[1]) - 1, parseInt(daArr[0]));//Convert js date
   }
   //Android Date picker
   openDatePicker= async ()=>{
@@ -76,41 +151,115 @@ export default class ServiceDetailScreen extends React.Component {
         // Use `new Date()` for current date.
         // May 25 2020. Month 0 is January.
         date: new Date(),
-        mode:'spinner'
+        mode:'spinner',
+        minDate:new Date(),
+        maxDate:this.getJsDate(this.getNextDate(new Date(),2))
       });
       if (action !== DatePickerAndroid.dismissedAction) {
         // Selected year, month (0-11), day
         month=month+1;
         let strMonth= month < 10 ?'0'+month : month;
-        this.setState({pickerFromInput:year+'-'+strMonth+'-'+day})
+        let strDay= day < 10 ?'0'+day : day;
+        this.setState({pickerFromInput:year+'-'+strMonth+'-'+strDay},this.getInventory);
       }
     } catch ({code, message}) {
       console.warn('Cannot open date picker', message);
     }
   }
-  //Android time picker
-  openTimePicker = async ()=>{
-    try {
-      const {action, hour, minute} = await TimePickerAndroid.open({
-        hour: 14,
-        minute: 0,
-        is24Hour: false, // Will display '2 PM'
-        mode:'spinner'
+  //Book seats 
+  payNow= () => {
+    const url=config.apiEndpoint+"public-user/booknow";
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer '+this.state.userToken
+      },
+      body: JSON.stringify({
+        book_date:this.state.pickerFromInput,
+        vendor_id:this.props.navigation.state.params.vendorId,
+        timeslot_id:this.state.time_slot_id,
+        time_slot:this.state.time_slot_name,
+        service_name:this.state.selectedService,
+        tot_cost:this.state.total_amount,
+        no_seat:this.state.selectedSeat
+      })
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({loading:false});
+        console.log(responseJson);
+      })
+      .catch((error) => {
+        console.error(error);
       });
-      if (action !== TimePickerAndroid.dismissedAction) {
-        // Selected hour (0-23), minute (0-59)
-        console.log(hour);
-      }
-    } catch ({code, message}) {
-      console.warn('Cannot open time picker', message);
-    }
+  }
+  payumoney= () => {
+    let amount = 99.9;
+let txid = new Date().getTime()+"";
+let productId = "product101";
+let name = "asdf";
+let email = "hello@world.com";
+let phone = "1231231231";
+let surl = config.apiEndpoint+'payu-validate'; //can be diffrennt for Succes
+let furl = config.apiEndpoint+'payu-validate'; //can be diffrennt for Failed
+let id = "6418320"; //Your Merchant ID here
+let key = "7KB3CDZE"; //Your Key Here
+let sandbox = true; //Make sure to set false on production or you will get error
+fetch(config.apiEndpoint+'payu-hash', {
+    method: 'POST',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer '+this.state.userToken
+    },
+    body: JSON.stringify({
+        key: key,
+        txnid: txid,
+        amount: amount,
+        productinfo: productId,
+        firstname: name,
+        email: email
+    }),
+})
+    .then((response) => response.json())
+    .then((hash) => {
+        let options = {
+            amount: amount,
+            txid: txid ,
+            productId: productId,
+            name: name,
+            email: email,
+            phone: phone,
+            id: id,
+            key: key,
+            surl: surl,
+            furl: furl,
+            sandbox: sandbox,
+            hash: hash
+        };
+        console.log(options);
+        PayuMoney.pay(options).then((d) => {
+            console.log(d); // WIll get a Success response with verification hash
+        }).catch(e => {
+            console.log(e); //In case of failture 
+        });
+    })
   }
   render() {
     console.disableYellowBox = true;
-   
+    const CloseComponent = () => (
+      <TouchableHighlight  onPress={()=>this.closeBookModal()}><View><Icon size={32} name="close" color='#FF3B70' type="material-community" /></View></TouchableHighlight>
+    );
+    let timeSlotItems = this.state.timeslot && this.state.timeslot.map( (slot, i) => {
+      return <Picker.Item key={i} value={slot.id} label={slot.timing} />
+    });
+    let seatItems = this.state.seats && this.state.seats.map( (seat, i) => {
+      return <Picker.Item key={i} value={seat} label={seat} />
+    });
     const { goBack } = this.props.navigation;
     return (
-      <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
+      <View style={{flex: 1,backgroundColor:'#f0f3f7'}}>
       <Loader loading={this.state.loading} />
       <Header leftComponent={<BackComponent navigation={this.props.navigation} />} outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFF'}}  centerComponent={<LogoComponent />}/> 
       <ScrollView> 
@@ -121,7 +270,7 @@ export default class ServiceDetailScreen extends React.Component {
             titleStyle={{fontSize:26,color:'#FF3B70'}}
             image={{uri: config.public_image_url+'public/'+this.state.vendor.photo}}>
             <Text style={{marginBottom: 10}}>
-            {this.state.vendor.shop_descr + 'We are situated at '+this.state.vendor.addr}
+            {this.state.vendor.description + 'We are situated at '+this.state.vendor.addr}
             </Text>
             <View style={{flexDirection:'row',justifyContent:"space-between",alignItems: 'baseline'}}>
             <Icon name="map-marker" type="font-awesome" color="#FF3B70" />
@@ -139,7 +288,6 @@ export default class ServiceDetailScreen extends React.Component {
                   medium
                   rounded
                   source={{uri: config.public_image_url+'public/'+serv.service_image}}
-                  onPress={() => console.log("Works!")}
                   activeOpacity={0.7}
                 />
                 <View style={{flexDirection:'column',justifyContent:"space-between"}}>
@@ -152,12 +300,12 @@ export default class ServiceDetailScreen extends React.Component {
                 <Button
                   buttonStyle={styles.button}
                   style={{borderRadius: 30}}
-                  title='Book Now' onPress={() => this.bookNow()}/>
+                  title='Book Now' onPress={() => this.bookNow(serv.service_name,serv.id,serv.service_price)}/>
                 </View>
               )}
               
             </View>
-            {
+            {/*
       this.state.vendor && 
             <View style={{paddingTop:30,padding:5}}>
               <Text style={{textAlign:'center',fontSize:25,borderBottomWidth:2,borderBottomColor:'#FF3B70'}} h2>Locate us @</Text>
@@ -177,7 +325,7 @@ export default class ServiceDetailScreen extends React.Component {
                       }}
                     />
                 </View>
-            </View>
+            </View>*/
             }
               {
       this.state.vendor && 
@@ -194,55 +342,53 @@ export default class ServiceDetailScreen extends React.Component {
           </Card>
         }
         <Modal visible={this.state.isModalOpen}
-              onRequestClose={() => this.setState({isModalOpen: false})} animationType={"slide"}
-              transparent={true}>
-              <View style={styles.modalBackground}>
-              <Card
-                  title='Select seats'
-                  titleStyle={{fontSize:26,color:'#FF3B70'}}
-                  >
-                  <View style={{paddingTop:10,flexDirection:'row',justifyContent:"space-between"}} >
-                  <View style={{flexDirection:'column'}}>
-                    <Text>Pick Date</Text>
-                    <Icon
-                    color="#111" 
-                      name="calendar-check-o" type="font-awesome" onPress={() => this.openDatePicker()}/>
-                    <Text>{this.state.pickerFromInput}</Text>
-                  </View>
-                  <View style={{flexDirection:'column'}}>
-                    <Text>Pick Time</Text>
-                   <Icon
-                   color="#111" 
-                    name="clock-o" type="font-awesome" onPress={() => this.openTimePicker()}/>
-                     <Text>{this.state.pickerFromInput}</Text>
-                  </View>
-                  <View style={{flexDirection:'column'}}>
-                    <Text>No Of seats</Text>
+                onRequestClose={() => this.setState({isModalOpen: false})} animationType={"slide"}
+               >
+                <View  style={{flex: 1,backgroundColor:'#f5f5f5'}}> 
+                  <Header outerContainerStyles={{backgroundColor:'#fff'}}  leftComponent={<CloseComponent />}
+                      centerComponent={{ text: this.state.selectedService, style: { color: '#FF3B70',fontWeight:'bold',fontSize:22 } }}
+                      />
+                    <Card >
+                    <Text style={{fontSize:18}}>Booking Date</Text>
+                    <View style={{flexDirection:'row'}}>
+                    <Icon onPress={()=>this.openDatePicker()} name="calendar" type="simple-line-icon" style={{padding:10}} />
+                    <FormInput underlineColorAndroid="#ccc" shake={this.state.error}
+                    editable={false} 
+                    value={this.state.pickerFromInput} 
+                    inputStyle={{fontSize:18}} /> 
+                    { this.state.errorBookDate && 
+                        <FormValidationMessage >{this.state.errorBookDate}</FormValidationMessage>
+                    }
+                    </View>
+                    <View>
+                    <Text style={{fontSize:18}}>Time Slot</Text>
                     <Picker
-                      selectedValue={this.state.seats}
-                      style={{ height: 50, width: 100 }}
-                      onValueChange={(itemValue, itemIndex) => this.setState({seats: itemValue})}>
-                      <Picker.Item label="1" value="1" />
-                      <Picker.Item label="2" value="2" />
-                      <Picker.Item label="3" value="3" />
+                        selectedValue={this.state.time_slot_id}
+                        onValueChange={(time_slot_id, index) => this.setSeats(time_slot_id)}>
+                        {timeSlotItems}
                     </Picker>
-                    <Text>{this.state.seats}</Text>
-                  </View>
-                  </View>
-                  
-                  <View style={{paddingTop:30,padding:5,flexDirection:'row',justifyContent:"space-between"}}>
-                    <Button
-                    buttonStyle={styles.button}
-                    style={{borderRadius: 30}}
-                    title='Pay Now' onPress={() => this.setState({isModalOpen: false})}/>
-                    <Button
-                    buttonStyle={styles.button}
-                    style={{borderRadius: 30}}
-                    title='Cancel' onPress={() => this.setState({isModalOpen: false})}/>
-                  </View>
-          </Card>
-              </View>
-        </Modal>
+                    </View>
+                   
+                    <View>
+                    <Text style={{fontSize:18}}>No of seats</Text>
+                      <Picker
+                          selectedValue={this.state.selectedSeat}
+                          onValueChange={(seat_count, index) => this.setSeatCount(seat_count)}>
+                          {seatItems}
+                        </Picker>
+                    </View>
+                    <View>
+                      <Text style={{fontSize:18}}>Total Amount</Text></View>
+                      <View><Text>{this.state.total_amount}</Text>
+                    </View>
+                  <Button
+                        onPress={()=>this.payumoney()}
+                        backgroundColor='#FF3B70'
+                        buttonStyle={{borderRadius: 30, marginLeft: 0, marginRight: 0, marginBottom: 0}}
+                        title='Pay Now' />
+                    </Card>
+                </View>
+            </Modal>
       </ScrollView>      
       </View>
     );

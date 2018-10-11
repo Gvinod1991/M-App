@@ -6,6 +6,7 @@ import LogoComponent from '../common/LogoComponent';
 import Loader from '../common/Loader';
 import config from '../config';
 import { ImagePicker } from 'expo';
+import LeftComponent from '../common/LeftComponent';
 export default class ProfileScreen extends React.Component {
   static navigationOptions = { header: null };
   constructor(props) {
@@ -173,10 +174,10 @@ export default class ProfileScreen extends React.Component {
   render() {
     console.disableYellowBox = true;
     return (
-      <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
+      <View style={{flex: 1,backgroundColor:'#f0f3f7'}}>
       <Loader loading={this.state.loading}/>
-      <Header  outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFF'}}  centerComponent={<LogoComponent />} 
-       />
+      <Header leftComponent={<LeftComponent navigation={this.props.navigation} />} outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFF'}}  centerComponent={<LogoComponent />} />
+     
     <ScrollView>
             <View style={{paddingTop:30,padding:5,backgroundColor:'#f5f5f5'}}>
                 <View style={{flexDirection:'row',justifyContent:'center'}}>

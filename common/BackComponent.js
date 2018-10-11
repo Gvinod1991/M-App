@@ -7,7 +7,7 @@ export default class BackComponent extends React.Component{
     }
     render(){
         return(
-            <TouchableHighlight  onPress={()=>this.props.navigation.goBack()}><View><Icon size={32} name="arrow-left" type="font-awesome" color='#FF3B70' /></View></TouchableHighlight>
+            <TouchableHighlight  onPress={()=>this.props.navigation.goBack()}><View><Icon size={32} name="arrow-left" type="simple-line-icon" color='#FF3B70' /></View></TouchableHighlight>
         );
     }
 }

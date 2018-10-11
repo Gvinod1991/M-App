@@ -19,7 +19,7 @@ class Terms extends React.Component {
   
     render() {
       return (
-        <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
+        <View style={{flex: 1,backgroundColor:'#f0f3f7'}}>
           <Header leftComponent={<BackComponent navigation={this.props.navigation} />} outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFF'}}  centerComponent={<LogoComponent />}/> 
           <ScrollView>
             <Card 

@@ -54,7 +54,7 @@ export default class OtpScreen extends React.Component {
   render() {
     console.disableYellowBox = true;
     return (
-      <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
+      <View style={{flex: 1,backgroundColor:'#f0f3f7'}}>
       <Loader loading={this.state.loading} />
        <Header  outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFF'}}  centerComponent={<LogoComponent />} />
       <Carausal />

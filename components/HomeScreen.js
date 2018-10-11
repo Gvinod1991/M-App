@@ -31,7 +31,6 @@ export default class HomeScreen extends React.Component {
         filterColor:'#111'
         }
     this._retrieveuserToken();
-    
   }
   componentWillMount() {
     if (Platform.OS === 'android' && !Constants.isDevice) {
@@ -99,9 +98,8 @@ export default class HomeScreen extends React.Component {
       const userToken = await AsyncStorage.getItem('userToken');
       if (userToken !== null) {
         // We have data!!
-        this.getCityList();
-        this.setState({ userToken: userToken});
-        this.getPriceRange();
+        this.setState({ userToken: userToken},this.getCityList);
+        this.getPriceRange(userToken);
       }
       } catch (error) {
         // Error retrieving data
@@ -198,14 +196,14 @@ export default class HomeScreen extends React.Component {
       });
   }
   //Function to get the minimum and maximum price range of the vendor
-  getPriceRange = () => {
+  getPriceRange = (userToken) => {
     const url=config.apiEndpoint+'price-range';
     fetch(url, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer '+this.state.userToken
+        'Authorization': 'Bearer '+userToken
       }
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -277,7 +275,7 @@ export default class HomeScreen extends React.Component {
     } 
     return (
       
-      <View style={{flex: 1,backgroundColor:'#f5f5f5'}}>
+      <View style={{flex: 1,backgroundColor:'#f0f3f7'}}>
       <Loader loading={this.state.loading} />
       <Header leftComponent={<LeftComponent navigation={this.props.navigation} />} outerContainerStyles={{paddingBottom:10,backgroundColor:'#FFF'}}  centerComponent={<LogoComponent />} />
       <View style={{flexDirection:'row'}}>
