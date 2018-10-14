@@ -24,20 +24,24 @@ Route::middleware('jwt.auth')->get('/public-user','PublicUserController@getUserD
 Route::middleware('jwt.auth')->put('/public-user','PublicUserController@updatePublicUser');
 Route::middleware('jwt.auth')->post('/public-user/upload-profile','PublicUserController@uploadPhoto');
 
-Route::get('/vendors', 'AddVendorController@showAll');
-Route::get('/vendor/{id}', 'AddVendorController@showSingle');
-Route::get('/city-list', 'AddVendorController@getCityList');
-Route::get('/locallity-list/{city_name}', 'AddVendorController@getLocality');
-Route::get('/price-range', 'BookingController@getPricerange');
-Route::get('/public-user/getListShop/{city}/{locality}/{gender}/{min}/{max}', 'BookingController@getFilterList');
+Route::middleware('jwt.auth')->get('/vendors', 'AddVendorController@showAll');
+Route::middleware('jwt.auth')->get('/vendor/{id}', 'AddVendorController@showSingle');
+Route::middleware('jwt.auth')->get('/city-list', 'AddVendorController@getCityList');
+Route::middleware('jwt.auth')->get('/locallity-list/{city_name}', 'AddVendorController@getLocality');
+Route::middleware('jwt.auth')->get('/price-range', 'BookingController@getPricerange');
+Route::middleware('jwt.auth')->get('/getListShop/{city}/{locality}/{gender}/{min}/{max}', 'BookingController@getFilterList');
 //Route::middleware('jwt.auth')->post('/booking', 'BookingController@bookSeat');
 
-Route::post('/public-user/checkavailability', 'BookingController@getAvailibility');
-Route::post('/public-user/booknow', 'BookingController@newBooking');
-Route::get('/public-user/bookinglist/{id}', 'BookingController@showAllBooking');
-Route::get('/public-user/singlebooking/{id}', 'BookingController@showSingleBooking');
-Route::post('/public-user/cancelbooking', 'BookingController@cancelBooking');
-Route::post('/public-user/mfsearch', 'BookingController@genderSearch');
-Route::post('/public-user/bycitysearch', 'BookingController@citySearch');
-Route::post('/public-user/bycity-localitysearch', 'BookingController@cityWithlocalitySearch');
+Route::middleware('jwt.auth')->post('/public-user/checkavailability', 'BookingController@getAvailibility');
+Route::middleware('jwt.auth')->post('/public-user/booknow', 'BookingController@newBooking');
+Route::middleware('jwt.auth')->get('/public-user/bookinglist', 'BookingController@showAllBooking');
+Route::middleware('jwt.auth')->get('/public-user/singlebooking/{id}', 'BookingController@showSingleBooking');
+Route::middleware('jwt.auth')->post('/public-user/cancelbooking', 'BookingController@cancelBooking');
+Route::middleware('jwt.auth')->post('/public-user/mfsearch', 'BookingController@genderSearch');
+Route::middleware('jwt.auth')->post('/public-user/bycitysearch', 'BookingController@citySearch');
+Route::middleware('jwt.auth')->post('/public-user/bycity-localitysearch', 'BookingController@cityWithlocalitySearch');
 
+//Payment gateway
+
+Route::middleware('jwt.auth')->post('/payu-hash', 'BookingController@makeHash');
+Route::post('/payu-validate', 'BookingController@payuValidate');

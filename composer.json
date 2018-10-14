@@ -41,7 +41,9 @@
     },
     "scripts": {
         "compile": [
-            "chmod -R 777 public/uploads/"
+            "chmod -R 777 public/uploads/",
+            "chmod -R 777 public/uploads/vendors",
+            "chmod -R 777 public/uploads/services"
           ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
