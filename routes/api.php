@@ -41,6 +41,9 @@ Route::middleware('jwt.auth')->post('/public-user/mfsearch', 'BookingController@
 Route::middleware('jwt.auth')->post('/public-user/bycitysearch', 'BookingController@citySearch');
 Route::middleware('jwt.auth')->post('/public-user/bycity-localitysearch', 'BookingController@cityWithlocalitySearch');
 
+Route::get('/public-user/getAllValidCoupons', 'CouponController@showAllValidCoupons');
+Route::get('/public-user/applyCoupon/{code}', 'CouponController@getCouponbyCode');
+
 //Payment gateway
 
 Route::middleware('jwt.auth')->post('/payu-hash', 'BookingController@makeHash');

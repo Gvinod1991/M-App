@@ -3,6 +3,7 @@
 <head>
 <!-- Include Heaer-->
 @include('layout.top-header')
+<meta name="_token" content="{{csrf_token()}}" />
 </head>
  <body class="theme-green">
  <!-- Preloder-->
@@ -25,7 +26,7 @@
         <div class="block-header">
             <div class="row clearfix">
                 <div class="col-md-12 col-sm-12">
-                 <?php  $xctp=\Session::get('shop_profile_name');$xcid=\Session::get('shop_profile_id');?>
+                 <?php  $xctp=\Session::get('shop_profile_name');$xcid=\Session::get('shop_profile_id'); $xtp=\Session::get('user_type'); ?>
                     <h2>{{$xctp}}</h2>
                 </div>   
                      
@@ -69,8 +70,10 @@
                                                 <th>Time Slot</th>
                                                 <th>No of Seats</th>
                                                 <th>Customer Name</th>
+                                                 @if($xtp==0) 
                                                 <th>Customer Mobile</th>
                                                 <th>Total Amount</th>
+                                                @endif
                                                  <th>STATUS</th>
                                             
                                             </tr>
@@ -85,13 +88,19 @@
                                                 <td>{{$booking->time_slot}}</td>
                                                 <td>{{$booking->no_seat}}</td>
                                                 <td>{{$booking->name}}</td>
+                                                 @if($xtp==0) 
                                                 <td>{{$booking->mobile}}</td>
                                                 <td>{{$booking->tot_cost}}</td>
+                                                @endif
                                                 <td>
-                                                  @if($booking->track_sts =='CANCEL') 
-                                                    <span class="badge badge-danger">$booking->track_sts</span>
-                                                     @else
-                                                    <span class="badge badge-success">$booking->track_sts</span>
+                                                    @if($booking->track_sts =='CANCEL') 
+                                                    <span class="badge badge-danger">{{$booking->track_sts}}</span>
+                                                    @elseif($booking->track_sts =='ACTIVE') 
+                                                    <span class="badge badge-primary">{{$booking->track_sts}}</span>
+                                                    <button class="con-code btn btn-sm btn-icon btn-pure btn-default on-default button-remove"data-id="{{$booking->id}}"  data-toggle="modal" data-target="#yesno-day"
+                                                data-toggle="tooltip" data-original-title="Remove">Confirm Now</a>
+                                                    @else
+                                                    <span class="badge badge-success">{{$booking->track_sts}}</span>
                                                   @endif
                                                 </td>
                                             </tr>
@@ -109,14 +118,16 @@
                                     <table class="table table-bordered table-hover js-basic-example dataTable table-custom">
                                         <thead>
                                             <tr>
-                                                <th>Date</th>
+                                               <th>Date</th>
                                                 <th>Service Name</th>
                                                 <th>Time Slot</th>
                                                 <th>No of Seats</th>
                                                 <th>Customer Name</th>
+                                                 @if($xtp==0) 
                                                 <th>Customer Mobile</th>
                                                 <th>Total Amount</th>
-                                                <th>STATUS</th>
+                                                @endif
+                                                 <th>STATUS</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -130,13 +141,15 @@
                                                 <td>{{$booking->time_slot}}</td>
                                                 <td>{{$booking->no_seat}}</td>
                                                 <td>{{$booking->name}}</td>
+                                                 @if($xtp==0) 
                                                 <td>{{$booking->mobile}}</td>
                                                 <td>{{$booking->tot_cost}}</td>
+                                                @endif
                                                 <td>
                                                   @if($booking->track_sts =='CANCEL') 
-                                                    <span class="badge badge-danger">$booking->track_sts</span>
+                                                    <span class="badge badge-danger">{{$booking->track_sts}}</span>
                                                      @else
-                                                    <span class="badge badge-success">$booking->track_sts</span>
+                                                    <span class="badge badge-success">{{$booking->track_sts}}</span>
                                                   @endif
                                                 </td>
                                             </tr>
@@ -155,28 +168,32 @@
                                     <table class="table table-bordered table-hover js-basic-example dataTable table-custom">
                                         <thead>
                                             <tr>
-                                                <th>Date</th>
+                                               <th>Date</th>
                                                 <th>Service Name</th>
                                                 <th>Time Slot</th>
                                                 <th>No of Seats</th>
                                                 <th>Customer Name</th>
+                                                 @if($xtp==0) 
                                                 <th>Customer Mobile</th>
                                                 <th>Total Amount</th>
-                                                <th>STATUS</th>
+                                                @endif
+                                                 <th>STATUS</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                      <?php if($bookings){?>
                                        @foreach($bookings as $booking)
                                             @if($today > $booking->book_date) 
-                                            <tr>
+                                           <tr>
                                                 <td>{{$booking->book_date}}</td>
                                                 <td>{{$booking->book_service}}</td>
                                                 <td>{{$booking->time_slot}}</td>
                                                 <td>{{$booking->no_seat}}</td>
                                                 <td>{{$booking->name}}</td>
+                                                 @if($xtp==0) 
                                                 <td>{{$booking->mobile}}</td>
                                                 <td>{{$booking->tot_cost}}</td>
+                                                @endif
                                                 <td>
                                                   @if($booking->track_sts =='CANCEL') 
                                                     <span class="badge badge-danger">{{$booking->track_sts}}</span>
@@ -207,12 +224,85 @@
     </div>
     
 </div>
+ <!-- Small modal -->
+                            <div class="modal fade bd-example-modal-sm" id="yesno-day" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-sm">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title h4" id="mySmallModalLabel">Enter Confirm Code</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                           <input type = "number" class="form-control" id = "booking_code" name = "booking_code" value = "">
+                                            <input type = "hidden" class="form-control" id = "booking_refid" name = "booking_refid" value = "">
+                                        </div>
+                                        <div id="bankErr" style="display:none" class="alert alert-danger" role="alert">A simple danger alert—check it out!</div>
+                                        <div id="bankSuc" style="display:none" class="alert alert-success" role="alert">A simple danger alert—check it out!</div>
+                                    
+                                        <div class="modal-footer">
+                                           
+                                            <button type="button" id="yesno_seat_ok" class="btn btn-primary">Confirm</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
  <!-- Javascript -->
  <!-- footer-->
  @include ('layout.footer')
  
 <script>
- 
+         jQuery(document).ready(function(){
+             //Service New Add Part =========================
+              jQuery('.con-code').click(function(e){
+
+                  var bkid = $(this).data("id") ;
+                  jQuery('#booking_refid').val(bkid);
+               
+            });
+            //=====================================================================
+              jQuery('#yesno_seat_ok').click(function(e){
+                    jQuery('#bankErr').hide();
+                    jQuery('#bankSuc').hide();
+                    e.preventDefault();
+                    $.ajaxSetup({
+                    headers: 
+                    {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    }
+                });
+               jQuery.ajax({
+                  url: "{{ url('/confirmCode') }}",
+                  method: 'post',
+                  data: 
+                  {
+                     id: jQuery('#booking_refid').val(),
+                     code: jQuery('#booking_code').val()
+                   
+                  },
+                  success: function(result)
+                  {
+                        //alert(result.status);
+                        if(result.status==1)
+                        {
+                                jQuery('#bankSuc').show();
+                                jQuery('#bankSuc').html(result.success);
+                                setTimeout(function(){ location.reload(); }, 2000);
+                        }
+                       
+                        else
+                        {
+                                jQuery('#bankErr').show();
+                                jQuery('#bankErr').html(result.success);
+                        }
+                    
+                  }
+                });
+                  
+             });
+              //=============================================================================
+         });
 </script>
  
     

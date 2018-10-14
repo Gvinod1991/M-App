@@ -219,9 +219,11 @@ class BookingController extends Controller
             $bk->no_seat = $request->no_seat;
             $bk->customer_id = $request->auth->id;
             $bk->tot_cost = $request->tot_cost;
-            $bk->pay_sts =0;
-
-            if($bk->save())
+            $bk->pay_sts = $request->pay_sts;
+            //Auto generate six digit confirm code
+            $six_digit_random_number = mt_rand(100000, 999999);
+            $bk->confirm_code = $six_digit_random_number;
+             if($bk->save())
             {
                 return response()->json(['status'=>1,'success'=>'Booking Successfull','booking_id'=>$bk->id]);
             }
@@ -242,6 +244,7 @@ class BookingController extends Controller
           $book_list=false;
             $book_list =  Booking::join('public_user','booking_details.customer_id','=','public_user.id')
             ->where('booking_details.vendor_id','=', $id)
+            ->select('booking_details.*', 'public_user.name','public_user.mobile')
             ->get();
             return view('mybookings',["bookings"=>$book_list]);
         
@@ -441,5 +444,17 @@ class BookingController extends Controller
     public function payuValidate(Request $request){
         $res=array("status"=>1,"message"=>"pay ment success");
         return response()->json($res);
+    }
+     //=============== Cancel Booking =========================================
+    public function confirmBookCode(Request $request)
+    {
+        if(Booking::where('id',$request->id)->where('confirm_code',$request->code)->update(['track_sts' => 'CONFIRM']))
+        {
+            return response()->json(['status'=>1,'success'=>'Booking Confirmed.']);
+        }
+        else
+        {
+            return response()->json(['status'=>-1,'success'=>'Invalid Code']);
+        } 
     }
 }
