@@ -12,6 +12,8 @@ use App\Blockseat;
 use App\Booking;
 use App\Blocktimeslot;
 use App\Blockservice;
+use App\ServiceCatagory;
+use App\BookingSummery;
 use Validator;
 use Datetime;
 use Carbon;
@@ -171,10 +173,11 @@ class BookingController extends Controller
      private $rules_booking = array(
         'book_date' => 'required ',
         'vendor_id' => 'required ',
-        'timeslot_id' => 'required ',
-        'time_slot' => 'required ',
-        'service_name' => 'required ', 
-        'no_seat' => 'required ', 
+        'arr_timeslot_id.*' => 'required ',
+        'arr_timeslot_name.*' => 'required ',
+        'arr_services.*' => 'required ', 
+        'arr_no_seat.*' => 'required ', 
+         'arr_prices.*' => 'required ', 
         'customer_id' => 'required ',
         'tot_cost' => 'required ', 
         'pay_sts' => 'required '
@@ -207,22 +210,63 @@ class BookingController extends Controller
         else
         {
             $ymd_bookdate = DateTime::createFromFormat('d-m-Y',$request->book_date)->format('Y-m-d');
-            $bk = new Booking();
-            $bk->book_date = $ymd_bookdate;
-            $bk->vendor_id = $request->vendor_id;
-            $bk->timeslot_id = $request->timeslot_id;
-            $bk->time_slot = $request->time_slot;
-            $bk->book_service = $request->service_name;
-            $bk->no_seat = $request->no_seat;
-            $bk->customer_id = $request->customer_id;
-            $bk->tot_cost = $request->tot_cost;
-            $bk->pay_sts = $request->pay_sts;
+           
+           
+            $bk1 = new BookingSummery();
+            $bk1->book_date = $ymd_bookdate;
+            $bk1->vendor_id = $request->vendor_id;
+            //$bk1->timeslot_id = $request->timeslot_id;
+            //$bk1->time_slot = $request->time_slot;
+           // $bk1->book_service = $request->service_name;
+           // $bk1->no_seat = $request->no_seat;
+            $bk1->customer_id = $request->customer_id;
+            $bk1->tot_cost = $request->tot_cost;
+            $bk1->pay_sts = $request->pay_sts;
+           
             //Auto generate six digit confirm code
             $six_digit_random_number = mt_rand(100000, 999999);
-            $bk->confirm_code = $six_digit_random_number;
-             if($bk->save())
+            $bk1->confirm_code = $six_digit_random_number;
+             if($bk1->save())
             {
+                $arr_services = $request->arr_services;
+                $arr_timeslot_id = $request->arr_timeslot_id;
+                $arr_timeslot_name = $request->arr_timeslot_name;
+                $arr_no_seat = $request->arr_no_seat;
+                $arr_prices = $request->arr_prices;
+
+                $c = 0;
+                $len = sizeof($arr_services);
+                for ($x = 0; $x < $len; $x++) {
+
+
+                     $bk = new Booking();
+                    $bk->book_date = $ymd_bookdate;
+                    $bk->booking_summery_id = $bk1->id;
+                    $bk->vendor_id = $request->vendor_id;
+                    $bk->timeslot_id = $arr_timeslot_id[$x];
+                    $bk->time_slot = $arr_timeslot_name[$x];
+                    $bk->book_service = $arr_services[$x];
+                    $bk->no_seat = $arr_no_seat[$x];
+                    $bk->customer_id = $request->customer_id;
+                    $bk->tot_cost = $arr_prices[$x];
+
+                    if($bk->save())
+                    {
+                         $c++;
+                    }
+                
+                } 
+               
+               
+                if($c == $len)
+                {
                     return response()->json(['status'=>1,'success'=>'Booking Successfull']);
+                }
+                else
+                {
+                    return response()->json(['status'=>-1,'success'=>'InternalError']);
+                }
+                    
             }
             else
             {
@@ -234,36 +278,70 @@ class BookingController extends Controller
         
         
     }
+     
     //============================== Get Bookings Records ===========================
     public function getBookingHistory($id)
     {
-        
+        $xtp=\Session::get('user_type');
+        if($xtp > 0)
+        {
+            $id = $xtp;
+        }
           $book_list=false;
-            $book_list =  Booking::join('public_user','booking_details.customer_id','=','public_user.id')
-            ->where('booking_details.vendor_id','=', $id)
-            ->select('booking_details.*', 'public_user.name','public_user.mobile')
+            $book_list =  BookingSummery::join('public_user','booking_summery.customer_id','=','public_user.id')
+            ->where('booking_summery.vendor_id','=', $id)
+            ->select('booking_summery.*', 'public_user.name','public_user.mobile')
             ->get();
+           // dd($book_list);
             return view('mybookings',["bookings"=>$book_list]);
         
-        
+       
         //$vnd =  Vendor::where('is_trash',1)->get();
         //return view('mybookings')->with('vendors',$vnd);
     }
     //================================================================================
+    //============================== Get BookingsDetails ===========================
+    public function getBookDetails(Request $request)
+    {
+        $book_list =  Booking::where('booking_summery_id',$request->id)->get();
+        $d = '';
+        if( $book_list->isEmpty())
+        {
+            $d =$d.'<tr>
+                        <td colspan="4">No Data Found</td>
+                       
+                    </tr>';
+        }
+        else
+        {
+            foreach($book_list as $bsk)
+            {
+                $d =$d.'<tr>
+                        <td>'. $bsk->book_service.'</td>
+                        <td>'.$bsk->time_slot.'</td>
+                        <td>'.$bsk->no_seat.'</td>
+                        <td>'.$bsk->tot_cost.'</td>
+                        </tr>';
+              
+            }
+        }
+
+          
+       return response()->json(['status'=>1,'success'=>$d]);
+        //$vnd =  Vendor::where('is_trash',1)->get();
+        //return view('mybookings')->with('vendors',$vnd);
+    }
     /*
     *Method to get all bookings 
     */
     public function bookings(Request $request)
     {
-         $xtp=\Session::get('user_type');
-        if($xtp > 0)
-        {
-            $id = $xtp;
-        }
+       
         $book_list=false;
-        $book_list =  Booking::
-        join('vendors','booking_details.vendor_id','=','vendors.id')
-        ->join('public_user','booking_details.customer_id','=','public_user.id')
+        $book_list =  BookingSummery::
+        join('vendors','booking_summery.vendor_id','=','vendors.id')
+        ->join('public_user','booking_summery.customer_id','=','public_user.id')
+        ->select('booking_summery.*', 'vendors.shop_name','public_user.name','public_user.mobile')
         ->get();
         return view('bookings',["bookings"=>$book_list]);
        
@@ -271,7 +349,7 @@ class BookingController extends Controller
     // Show all booking of Custommer
      public function showAllBooking($id)
     {
-        $book_list =  Booking::where('customer_id',$id)->get();
+        $book_list =  BookingSummery::where('customer_id',$id)->get();
         return response()->json($book_list);
        
     }
@@ -279,16 +357,24 @@ class BookingController extends Controller
     // Show all booking of Custommer
      public function showSingleBooking($id)
     {
-        $book_list =  Booking::where('id',$id)->get();
+        $book_list =  BookingSummery::where('id',$id)->get();
         return response()->json($book_list);
        
     }
      //=============== Cancel Booking =========================================
     public function cancelBooking(Request $request)
     {
-        if(Booking::where('id',$request->id)->update(['track_sts' => 'CANCEL']))
+        if(BookingSummery::where('id',$request->id)->update(['track_sts' => 'CANCEL']))
         {
-            return response()->json(['status'=>1,'success'=>'Booking Cancelled.']);
+
+            if(Booking::where('booking_summery_id',$request->id)->update(['track_sts' => 'CANCEL']))
+            {
+                return response()->json(['status'=>1,'success'=>'Booking Cancelled.']);
+            }
+            else
+            {
+                return response()->json(['status'=>-1,'success'=>'InternalError']);
+            } 
         }
         else
         {
@@ -369,9 +455,24 @@ class BookingController extends Controller
             return response()->json($res);
         }
     }
+    //============================== Get Service catagory ===========================
+    public function getCatagory()
+    {
+        
+         $vnd =  ServiceCatagory::where('is_enable', '=', 1)->where('is_trash', '=', 0)->get();
+        if(!$vnd->isEmpty())
+        {
+             return response()->json($vnd);
+        }
+        else
+        {
+            $res=array('status'=>0,"message"=>"No data Found");
+            return response()->json($res);
+        }
+    }
     //=======================================================================================
-   // Default query parameter : http://localhost/my-style-app/api/public-user/getListShop/Bhubaneswar/NO/NO/-1/-1
-    public function getFilterList($city,$locality,$gender,$min,$max)
+   // Default query parameter : http://localhost/M-App/api/public-user/getListShop/Bhubaneswar/NO/NO/0/-1/-1
+    public function getFilterList($city,$locality,$gender,$catagory_id,$min,$max)
     {
         $query= DB::table('vendors')
         ->select('*')
@@ -387,11 +488,18 @@ class BookingController extends Controller
             $query->where('vendors.gender', '=', $gender) ;
            
         }
-        if($min != -1 && $max != -1)
+        if(($min != -1 && $max != -1) || $catagory_id > 0)
         {
           
             $query->join('services','vendors.id','services.vendor_id');
-            $query->whereBetween('services.service_price', [$min, $max]);
+            if($min != -1 && $max != -1)
+            {
+                $query->whereBetween('services.service_price', [$min, $max]);
+            }
+            if($catagory_id > 0)
+            {
+                $query->where('services.catagory_id', '=', $catagory_id) ;
+            }
            
         }
 
@@ -403,7 +511,7 @@ class BookingController extends Controller
         }
         else
         {
-            $res=array("status"=>0,"message"=>"Booking data retrival failed!");
+            $res=array("status"=>0,"message"=>"No data found");
             return response()->json($res);
         }
       
@@ -411,13 +519,50 @@ class BookingController extends Controller
      //=============== Cancel Booking =========================================
     public function confirmBookCode(Request $request)
     {
-        if(Booking::where('id',$request->id)->where('confirm_code',$request->code)->update(['track_sts' => 'CONFIRM']))
+        if(BookingSummery::where('id',$request->id)->where('confirm_code',$request->code)->update(['track_sts' => 'CONFIRM']))
         {
-            return response()->json(['status'=>1,'success'=>'Booking Confirmed.']);
+            if(Booking::where('booking_summery_id',$request->id)->update(['track_sts' => 'CONFIRM']))
+            {
+                return response()->json(['status'=>1,'success'=>'Booking Confirmed.']);
+            }
+            else
+            {
+                return response()->json(['status'=>-1,'success'=>'Invalid Code']);
+            } 
         }
         else
         {
             return response()->json(['status'=>-1,'success'=>'Invalid Code']);
         } 
+    }
+     //=============== Cancel Booking =========================================
+    public function getAllDetailsBooking($id)
+    {
+        $book_list =  Booking::where('booking_summery_id',$id)->get();
+      
+        if( $book_list->isEmpty())
+        {
+            $res=array("status"=>0,"message"=>"No data found","data"=>$book_list);
+            return response()->json($res);
+        }
+        else
+        {
+             $res=array("status"=>1,"message"=>"Booking data retrived successfully!","data"=>$book_list);
+            return response()->json($res);
+        }
+    }
+    //=================== delete service booking ===============================================
+    public function deleteSingleSlot($id)
+    {
+       
+        if(Booking::where('id', $id)->delete())
+        {
+            return response()->json(['status'=>1,'success'=>'Status Changed Successfully']);
+        }
+        else
+        {
+            return response()->json(['status'=>-1,'success'=>'InternalError']);
+        }
+       
     }
 }

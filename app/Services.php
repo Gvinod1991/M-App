@@ -15,7 +15,7 @@ class Services extends Model
     //Time Stamps
     public $timestamps = true;
 
-     protected $fillable = array('service_name','service_price','service_image','any_offer','vendor_id','is_enable','is_trash','created_at','updated_at');
+     protected $fillable = array('service_name','service_price','service_image','any_offer','catagory_id','vendor_id','is_enable','is_trash','created_at','updated_at');
 
      //Check existance of data having same fields
 	//@auther : Shankar Bag

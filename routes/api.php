@@ -29,7 +29,8 @@ Route::get('/vendor/{id}', 'AddVendorController@showSingle');
 Route::get('/city-list', 'AddVendorController@getCityList');
 Route::get('/locallity-list/{city_name}', 'AddVendorController@getLocality');
 Route::get('/price-range', 'BookingController@getPricerange');
-Route::get('/public-user/getListShop/{city}/{locality}/{gender}/{min}/{max}', 'BookingController@getFilterList');
+Route::get('/public-user/getListShop/{city}/{locality}/{gender}/{catagory_id}/{min}/{max}', 'BookingController@getFilterList');
+Route::get('/public-user/serviceCatagory', 'BookingController@getCatagory');
 
 //Route::middleware('jwt.auth')->post('/booking', 'BookingController@bookSeat');
 
@@ -43,4 +44,6 @@ Route::post('/public-user/bycitysearch', 'BookingController@citySearch');
 Route::post('/public-user/bycity-localitysearch', 'BookingController@cityWithlocalitySearch');
 Route::get('/public-user/getAllValidCoupons', 'CouponController@showAllValidCoupons');
 Route::get('/public-user/applyCoupon/{code}', 'CouponController@getCouponbyCode');
+Route::get('/public-user/getDetailsBooking/{id}', 'BookingController@getAllDetailsBooking');
+Route::get('/public-user/deleteSingleSlotBooking/{id}', 'BookingController@deleteSingleSlot');
 

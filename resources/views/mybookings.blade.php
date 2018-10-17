@@ -66,9 +66,8 @@
                                         <thead>
                                             <tr>
                                                 <th>Date</th>
-                                                <th>Service Name</th>
-                                                <th>Time Slot</th>
-                                                <th>No of Seats</th>
+                                                <th>Booking ID</th>
+                                              
                                                 <th>Customer Name</th>
                                                  @if($xtp==0) 
                                                 <th>Customer Mobile</th>
@@ -81,12 +80,11 @@
                                           <tbody>
                                         <?php if($bookings){?>
                                        @foreach($bookings as $booking)
-                                            @if($today==$booking->book_date) 
+                                           @if($today==$booking->book_date) 
                                             <tr>
                                                 <td>{{$booking->book_date}}</td>
-                                                <td>{{$booking->book_service}}</td>
-                                                <td>{{$booking->time_slot}}</td>
-                                                <td>{{$booking->no_seat}}</td>
+                                                <td>{{$booking->id}}</td>
+                                               
                                                 <td>{{$booking->name}}</td>
                                                  @if($xtp==0) 
                                                 <td>{{$booking->mobile}}</td>
@@ -102,6 +100,10 @@
                                                     @else
                                                     <span class="badge badge-success">{{$booking->track_sts}}</span>
                                                   @endif
+                                                </td>
+                                                <td>
+                                                <button class="get-book btn btn-sm btn-icon btn-pure btn-default on-default button-remove"data-id="{{$booking->id}}"  data-toggle="modal" data-target="#book-detl"
+                                                data-toggle="tooltip" data-original-title="Remove">View Deatails</a>
                                                 </td>
                                             </tr>
                                              @endif
@@ -119,9 +121,8 @@
                                         <thead>
                                             <tr>
                                                <th>Date</th>
-                                                <th>Service Name</th>
-                                                <th>Time Slot</th>
-                                                <th>No of Seats</th>
+                                                <th>Booking ID</th>
+                                              
                                                 <th>Customer Name</th>
                                                  @if($xtp==0) 
                                                 <th>Customer Mobile</th>
@@ -137,9 +138,8 @@
                                             @if($today < $booking->book_date) 
                                             <tr>
                                                 <td>{{$booking->book_date}}</td>
-                                                <td>{{$booking->book_service}}</td>
-                                                <td>{{$booking->time_slot}}</td>
-                                                <td>{{$booking->no_seat}}</td>
+                                                <td>{{$booking->book_id}}</td>
+                                              
                                                 <td>{{$booking->name}}</td>
                                                  @if($xtp==0) 
                                                 <td>{{$booking->mobile}}</td>
@@ -151,6 +151,10 @@
                                                      @else
                                                     <span class="badge badge-success">{{$booking->track_sts}}</span>
                                                   @endif
+                                                </td>
+                                                 <td>
+                                                <button class="get-book btn btn-sm btn-icon btn-pure btn-default on-default button-remove"data-id="{{$booking->id}}"  data-toggle="modal" data-target="#book-detl"
+                                                data-toggle="tooltip" data-original-title="Remove">View Deatails</a>
                                                 </td>
                                             </tr>
                                              @endif
@@ -169,15 +173,15 @@
                                         <thead>
                                             <tr>
                                                <th>Date</th>
-                                                <th>Service Name</th>
-                                                <th>Time Slot</th>
-                                                <th>No of Seats</th>
+                                                <th>Booking ID</th>
+                                               
                                                 <th>Customer Name</th>
                                                  @if($xtp==0) 
                                                 <th>Customer Mobile</th>
                                                 <th>Total Amount</th>
                                                 @endif
                                                  <th>STATUS</th>
+                                                 
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -186,9 +190,8 @@
                                             @if($today > $booking->book_date) 
                                            <tr>
                                                 <td>{{$booking->book_date}}</td>
-                                                <td>{{$booking->book_service}}</td>
-                                                <td>{{$booking->time_slot}}</td>
-                                                <td>{{$booking->no_seat}}</td>
+                                                <td>{{$booking->id}}</td>
+                                                
                                                 <td>{{$booking->name}}</td>
                                                  @if($xtp==0) 
                                                 <td>{{$booking->mobile}}</td>
@@ -200,6 +203,10 @@
                                                      @else
                                                     <span class="badge badge-success">{{$booking->track_sts}}</span>
                                                   @endif
+                                                </td>
+                                                 <td>
+                                                <button class="get-book btn btn-sm btn-icon btn-pure btn-default on-default button-remove"data-id="{{$booking->id}}"  data-toggle="modal" data-target="#book-detl"
+                                                data-toggle="tooltip" data-original-title="Remove">View Deatails</a>
                                                 </td>
                                             </tr>
                                              @endif
@@ -248,6 +255,44 @@
                                     </div>
                                 </div>
                             </div>
+
+                             <div class="modal fade bd-example-modal-lg" id="book-detl" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title h4" id="mySmallModalLabel">Booking Details</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body" >
+                                             <div class="table-responsive">
+                                        <table class="table table-bordered table-hover js-basic-example dataTable table-custom">
+                                            <thead>
+                                                <tr>
+                                                    <th>Service Name</th>
+                                                    <th>Time Slot</th>
+                                                    <th>No Seat</th>
+                                                    <th>Price</th>
+                                                   
+                                                </tr>
+                                            </thead>
+                                            <tbody id="all-booking">
+                                        
+                                            </tbody>
+                                        </table>
+                                        </div>
+
+
+                                             </div>
+                                       
+                                        <div class="modal-footer">
+                                           
+                                         
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
  <!-- Javascript -->
  <!-- footer-->
  @include ('layout.footer')
@@ -261,6 +306,32 @@
                   jQuery('#booking_refid').val(bkid);
                
             });
+            //================================================================
+             jQuery('.get-book').click(function(e){
+                 
+                    e.preventDefault();
+                    $.ajaxSetup({
+                    headers: 
+                    {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    }
+                });
+               jQuery.ajax({
+                  url: "{{ url('/getMybookingDetails') }}",
+                  method: 'post',
+                  data: 
+                  {
+                     id: $(this).data("id")
+                   
+                  },
+                  success: function(result)
+                  {
+                        
+                         jQuery('#all-booking').html(result.success);
+                  }
+                });
+                  
+             });
             //=====================================================================
               jQuery('#yesno_seat_ok').click(function(e){
                     jQuery('#bankErr').hide();

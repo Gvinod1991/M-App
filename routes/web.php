@@ -59,10 +59,12 @@ Route::post('couponChangeStatus', [ 'as' => 'couponChangeStatus', 'uses'=>'Coupo
 Route::post('couponDelete', [ 'as' => 'couponDelete', 'uses'=>'CouponController@delCpsts']);
 Route::post('addCoupon', [ 'as' => 'addCoupon', 'uses'=>'CouponController@addNewCp']);
 Route::post('confirmCode', [ 'as' => 'confirmCode', 'uses'=>'BookingController@confirmBookCode']);
+Route::post('getMybookingDetails', [ 'as' => 'getMybookingDetails', 'uses'=>'BookingController@getBookDetails']);
 
 Route::get('viewCallender/{id}', 'AddVendorController@showCallender');
 Route::get('mybookings/{id}', 'BookingController@getBookingHistory');
 Route::get('dailyBlockingStatus/{id}/{dt}', 'DayBlockController@showDailyEvents');
+
 
 Route::post('changeprofilepic', [ 'as' => 'changeprofilepic', 'uses'=>'AddVendorController@uploadProfilePic']);
 Route::get('customers',[ 'as' => 'customers','uses'=>'PublicUserController@customerList']);

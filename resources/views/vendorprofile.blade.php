@@ -161,22 +161,33 @@
                                             <th>SERVICES</th>
                                             <th>PRICE</th>
                                             <th>ANY OFFER</th>
-                                            
+                                            <th>CATAGORY</th>
 											<th>ACTION</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                          @foreach($data["service"] as $vendor)
+                                         <?php  $zc = "xxx";?>
                                         <tr>
                                             
                                             <td>{{$vendor->service_name}}</td>
                                             <td>{{$vendor->service_price}}</td>
                                             <td>{{$vendor->any_offer}}</td>
-                                           
+                                             @foreach($data["serv_cat"] as $vc)
+                                             <?php 
+                                            
+                                             if($vendor->catagory_id == $vc->id )
+                                             {
+                                                    $zc = $vc->catagory_name;
+                                             }
+                                             
+                                             ?>
+                                              @endforeach
+                                             <td>{{$zc}}</td>
 											<td class="actions">
                                                
                                                 <button class="ser-edt btn btn-sm btn-icon btn-pure btn-default on-default m-r-5 button-edit" data-toggle="modal" data-target="#serviceEditModal"
-                                                data-toggle="tooltip" data-id="{{$vendor->id}}" data-name="{{$vendor->service_name}}" data-price="{{$vendor->service_price}}" data-offer="{{$vendor->any_offer}}" data-original-title="Edit"><i class="icon-pencil" aria-hidden="true"></i></a>
+                                                data-toggle="tooltip" data-id="{{$vendor->id}}" data-name="{{$vendor->service_name}}" data-price="{{$vendor->service_price}}" data-offer="{{$vendor->any_offer}}" data-cat="{{$vendor->catagory_id}}" data-original-title="Edit"><i class="icon-pencil" aria-hidden="true"></i></a>
                                               	<button class="ser-del btn btn-sm btn-icon btn-pure btn-default on-default button-remove"data-id="{{$vendor->id}}" data-status="{{$vendor->is_trash}}" data-toggle="modal" data-target="#yesno"
                                                 data-toggle="tooltip" data-original-title="Remove"><i class="icon-trash" aria-hidden="true"></i></a>
                                             </td>
@@ -188,14 +199,26 @@
                                         <tr>
                                             
                                             <th>SERVICES</th>
-                                         
+                                            <th>CATAGORY</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                          @foreach($data["service"] as $vendor)
+                                          <?php  $zc = "xxx";?>
                                         <tr>
                                             
                                             <td>{{$vendor->service_name}}</td>
+                                             @foreach($data["serv_cat"] as $vc)
+                                             <?php 
+                                            
+                                             if($vendor->catagory_id == $vc->id )
+                                             {
+                                                    $zc = $vc->catagory_name;
+                                             }
+                                             
+                                             ?>
+                                              @endforeach
+                                             <td>{{$zc}}</td>
                                          
                                         </tr>
                                         @endforeach
@@ -627,6 +650,16 @@
                                                 </div>
                                                  <input type="number" id="offer" name="offer" class="form-control"  aria-label="If Any Offer" aria-describedby="basic-addon1">
                                             </div>
+                                             <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                <span class="input-group-text">Service catagory</span>
+                                                </div>
+                                                 <select id="single-selection" name="single_selection" class="multiselect multiselect-custom form-control">
+                                                    @foreach($data["serv_cat"] as $vendor)
+                                                    <option value="{{$vendor->id}}">{{$vendor->catagory_name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                             <div class="input-group mb-3">
                                             <div class="input-group-prepend">
                                             <span class="input-group-text">Service Icon</span>
@@ -735,6 +768,16 @@
                                                 </div>
                                                  <input type="number" id="offer_edit" name="offer" class="form-control"  aria-label="If Any Offer" aria-describedby="basic-addon1">
                                             </div>
+                                              <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                <span class="input-group-text">Service catagory</span>
+                                                </div>
+                                                 <select id="single-selection-edit" name="single-selection-edit" class="multiselect multiselect-custom form-control">
+                                                    @foreach($data["serv_cat"] as $vendor)
+                                                    <option value="{{$vendor->id}}">{{$vendor->catagory_name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                             <div class="input-group mb-3">
                                             <div class="input-group-prepend">
                                             <span class="input-group-text">Service Icon</span>
@@ -837,6 +880,7 @@
                 formData.append('file', files);
                 formData.append('price', jQuery('#price').val());
                 formData.append('service', jQuery('#service').val());
+                formData.append('service_cat', jQuery('#single-selection').val());
                 formData.append('offer',jQuery('#offer').val());
                 formData.append('vid', jQuery('#vid').val());
                 $.ajaxSetup({
@@ -992,6 +1036,7 @@
                     formData.append('price', jQuery('#price_edit').val());
                     formData.append('service', jQuery('#service_edit').val());
                     formData.append('offer',jQuery('#offer_edit').val());
+                     formData.append('service_cat',jQuery('#single-selection-edit').val());
                     formData.append('vid', jQuery('#vid_edit').val());
                     $.ajaxSetup({
                     headers: 
@@ -1149,12 +1194,14 @@
                    var service_name = $(this).data("name") ;
                    var service_price = $(this).data("price") ;
                    var service_offer = $(this).data("offer") ;
+                   var service_cat = $(this).data("cat") ;
                   // alert(service_id+"-"+service_name+"-"+service_price+"-"+service_offer);
 
                    jQuery('#sid').val(service_id);
                    jQuery('#service_edit').val(service_name);
                    jQuery('#price_edit').val(service_price);
                    jQuery('#offer_edit').val(service_offer);
+                   jQuery('#single-selection-edit').val(service_cat);
                   // alert(service_id+"-"+service_name+"-"+service_price+"-"+service_offer);
                   // jQuery("#serviceEditModal").modal("show");
                  //  alert(service_id+"-"+service_name+"-"+service_price+"-"+service_offer);

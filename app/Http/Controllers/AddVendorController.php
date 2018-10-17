@@ -12,6 +12,7 @@ use App\Blockseat;
 use App\Booking;
 use App\Blocktimeslot;
 use App\Blockservice;
+use App\ServiceCatagory;
 use Validator;
 use Datetime;
 use Carbon;
@@ -212,6 +213,7 @@ class AddVendorController extends Controller
         $vnd =  Vendor::where('id',$id)->get();
         $serv =  Services::where('vendor_id',$id)->where('is_trash', '=', 0)->get();
         $timeslot =  Timeslot::where('vendor_id',$id)->where('is_trash', '=', 0)->get();
+        $serv_cat =  ServiceCatagory::where('is_enable', '=', 1)->where('is_trash', '=', 0)->get();
         $bankdetails =  Bankdetails::where('vendor_id',$id)->get();
         $weekshedule =  Weekshedule::where('vendor_id',$id)->get();
         $alldata = array();
@@ -220,6 +222,7 @@ class AddVendorController extends Controller
         $alldata["timeslot"]= $timeslot;
         $alldata["bankdetails"]= $bankdetails;
         $alldata["week"]= $weekshedule;
+         $alldata["serv_cat"]= $serv_cat;
         return view('vendorprofile',["data"=>$alldata]);
        // return view('vendorprofile')->with('vendors',$vnd);
        //return view('vendorprofile');
@@ -291,6 +294,7 @@ class AddVendorController extends Controller
         $serv->service_name = $request->service;
         $serv->service_price = $request->price;
         $serv->any_offer = $request->offer;
+        $serv->catagory_id = $request->service_cat;
         $serv->vendor_id = $request->vid;
         
 
@@ -378,7 +382,7 @@ class AddVendorController extends Controller
         }
         }
            
-         if(Services::where('vendor_id',$request->vid)->where('service_name',$request->service)->update(['service_price'=>$request->price,'any_offer'=>$request->offer,'service_image'=>$service_image]))
+         if(Services::where('vendor_id',$request->vid)->where('service_name',$request->service)->update(['service_price'=>$request->price,'any_offer'=>$request->offer,'catagory_id'=>$request->service_cat,'service_image'=>$service_image]))
             {
                 return response()->json(['status'=>1,'success'=>'Data updated successfully.']);
             }
