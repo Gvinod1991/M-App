@@ -34,7 +34,10 @@ class BookingController extends Controller
 
         $book_date = $request->book_date;
         $vendor_id = $request->vendor_id;
-        $ymd_bookdate = DateTime::createFromFormat('d-m-Y',$book_date)->format('Y-m-d');
+        
+        //dd();
+        $ymd_bookdate = Date('Y-m-d',strtotime($book_date));
+        $res=array('status'=>1,"message"=>"Got Services");
 
         //This is for closing date checking, If get data than Shop is closed on that day.
         //If it wii return data than shop is close that day
@@ -164,8 +167,8 @@ class BookingController extends Controller
             
         }
         // Return all data
-        $res=array('status'=>1,"message"=>"Got Services");
-        return response()->json($alldata);
+        $res=array('status'=>1,"message"=>"Got Services",'vendorData'=>$alldata);
+        return response()->json($res);
       
      
     }
@@ -180,7 +183,7 @@ class BookingController extends Controller
          'arr_prices.*' => 'required ', 
         'customer_id' => 'required ',
         'tot_cost' => 'required ', 
-        'pay_sts' => 'required '
+        //'pay_sts' => 'required '
                           
     );
     //Custom Error Messages
@@ -191,9 +194,9 @@ class BookingController extends Controller
                     'time_slot' => 'time-slot name is required.',
                     'service_name' => 'Please select the service.',
                     'no_seat' => 'Please enter the number of seat you want to booking.',
-                    'customer_id' => 'Custommer id is required.',
+                    //'customer_id' => 'Custommer id is required.',
                     'tot_cost' => 'total cost is required.',
-                    'pay_sts' => 'Pay status is required.'
+                    //'pay_sts' => 'Pay status is required.'
                     ];
 
 
@@ -209,10 +212,7 @@ class BookingController extends Controller
         }
         else
         {
-            $ymd_bookdate = DateTime::createFromFormat('d-m-Y',$request->book_date)->format('Y-m-d');
-           
-           
-            $bk1 = new BookingSummery();
+            $ymd_bookdate = Date('Y-m-d',strtotime($request->book_date));$bk1 = new BookingSummery();
             $bk1->book_date = $ymd_bookdate;
             $bk1->vendor_id = $request->vendor_id;
             //$bk1->timeslot_id = $request->timeslot_id;
@@ -222,7 +222,7 @@ class BookingController extends Controller
             $bk1->customer_id = $request->customer_id;
             $bk1->tot_cost = $request->tot_cost;
             $bk1->pay_sts = $request->pay_sts;
-           
+
             //Auto generate six digit confirm code
             $six_digit_random_number = mt_rand(100000, 999999);
             $bk1->confirm_code = $six_digit_random_number;
@@ -254,19 +254,15 @@ class BookingController extends Controller
                     {
                          $c++;
                     }
-                
                 } 
-               
-               
                 if($c == $len)
                 {
-                    return response()->json(['status'=>1,'success'=>'Booking Successfull']);
+                    return response()->json(['status'=>1,'success'=>'Booking Successfull','booking_id'=>$bk->id]);
                 }
                 else
                 {
                     return response()->json(['status'=>-1,'success'=>'InternalError']);
                 }
-                    
             }
             else
             {
@@ -347,10 +343,17 @@ class BookingController extends Controller
        
     }
     // Show all booking of Custommer
-     public function showAllBooking($id)
+     public function showAllBooking(Request $request)
     {
-        $book_list =  BookingSummery::where('customer_id',$id)->get();
-        return response()->json($book_list);
+        $id=$request->auth->id;
+        $book_list =  BookingSummery::join('vendors','booking_details.vendor_id','=','vendors.id')
+        ->where('customer_id',$id)->where('pay_sts',1)->get();
+        if($book_list){
+            return response()->json(['status'=>1,'success'=>'Bookings fetching Successfull',
+            'bookings'=>$book_list]);
+        }else{
+            return response()->json(['status'=>0,'success'=>'Bookings fetching failed']);
+        }
        
     }
     
@@ -471,9 +474,11 @@ class BookingController extends Controller
         }
     }
     //=======================================================================================
+
    // Default query parameter : http://localhost/M-App/api/public-user/getListShop/Bhubaneswar/NO/NO/0/-1/-1
     public function getFilterList($city,$locality,$gender,$catagory_id,$min,$max)
     {
+       
         $query= DB::table('vendors')
         ->select('*')
         ->where('vendors.city', 'like', '%' . $city . '%');
@@ -502,11 +507,11 @@ class BookingController extends Controller
             }
            
         }
-
         $data=$query->get();
+        
         if(sizeof($data)>0)
         {
-            $res=array("status"=>1,"message"=>"Booking data retrived successfully!","data"=>$data);
+            $res=array("status"=>1,"message"=>"Booking data retrived successfully!","vendors"=>$data);
             return response()->json($res);
         }
         else
@@ -515,6 +520,32 @@ class BookingController extends Controller
             return response()->json($res);
         }
       
+    }
+    public function makeHash(Request $request){
+        $key=$request->key;
+        $txnid=$request->txnid;
+        $amount=$request->amount;
+        $productinfo=$request->productinfo;
+        $firstname=$request->firstname;
+        $email=$request->email;
+        $salt = "XXXXXX"; //Please change the value with the live salt for production environment
+        
+        $payhash_str = $key . '|' . $this->checkNull($txnid) . '|' . $this->checkNull($amount) . '|' . $this->checkNull($productinfo) . '|' . $this->checkNull($firstname) . '|' . $this->checkNull($email) . '|||||||||||' . $salt;
+        
+        $hash = strtolower(hash('sha512', $payhash_str));
+        return response()->json($hash);
+    }
+    public function checkNull($value)
+    {
+        if ($value == null) {
+            return '';
+        } else {
+            return $value;
+        }
+    }
+    public function payuValidate(Request $request){
+        $res=array("status"=>1,"message"=>"pay ment success");
+        return response()->json($res);
     }
      //=============== Cancel Booking =========================================
     public function confirmBookCode(Request $request)
